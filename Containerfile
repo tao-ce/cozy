@@ -53,13 +53,13 @@ RUN \
                 --setopt=install_weak_deps=false \
                 install -y
 
-COPY ./config/images.lst /run/context/images.lst
-RUN \
-    cat /run/context/images.lst \
-        | grep -v '^#' \
-        | grep -v '^[ ]*$' \
-        | xargs -n1 \
-            podman pull
+# COPY ./config/images.lst /run/context/images.lst
+# RUN \
+#     cat /run/context/images.lst \
+#         | grep -v '^#' \
+#         | grep -v '^[ ]*$' \
+#         | xargs -n1 \
+#             podman pull
 
 COPY root/ /
 COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/
