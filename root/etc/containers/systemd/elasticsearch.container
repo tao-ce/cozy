@@ -19,6 +19,7 @@ Volume=/var/lib/tao-ce/dependencies/es:/usr/share/elasticsearch/data:z,U
 Restart=always
 ExecStartPre=mkdir -p /var/lib/tao-ce/dependencies/es
 RestartSec=5s
+TimeoutStartSec=600s
 
 [Install]
 WantedBy=multi-user.target

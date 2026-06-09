@@ -1,0 +1,45 @@
+name: Build
+on:
+  push:
+    # branches:
+      # - main
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Image
+      id: build-image
+      uses: redhat-actions/buildah-build@v2
+      with:
+        image: quay.io/tao-ce/cozy/pi
+        target: pi
+        tags: latest ${{ github.sha }}
+        containerfiles:
+          ./Containerfile
+        build-args: |
+          FEDORA_VERSION=44
+          FEDORA_FLAVOR=quay.io/fedora/fedora-bootc
+        extra-args: |
+          --target pi
+
+    - name: Build Pi Image
+      id: build-pi-image
+      uses: osbuild/bootc-image-builder-action@main
+      with:
+        config-file: ./config/bootc.toml
+        image: quay.io/tao-ce/cozy/pi:latest
+        types: |
+          raw
+        rootfs: xfs
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: pi-image
+        path: ${{ steps.build-pi-image.outputs.output-directory }}
+        if-no-files-found: error

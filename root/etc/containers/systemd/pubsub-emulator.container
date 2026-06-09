@@ -10,5 +10,7 @@ Network=deps.network
 [Service]
 Restart=always
 RestartSec=5s
+TimeoutStartSec=600s
+
 [Install]
 WantedBy=multi-user.target

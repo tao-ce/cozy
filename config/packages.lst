@@ -19,5 +19,5 @@ cockpit-system
 cockpit-ostree
 cockpit-podman
 cockpit-networkmanager
-cockpit-navigator
+cockpit-files
 pcp

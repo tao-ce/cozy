@@ -1,6 +1,6 @@
-ARG FEDORA_VERSION=42
+ARG FEDORA_VERSION=44
 ARG FEDORA_FLAVOR=quay.io/fedora-ostree-desktops/kinoite
-ARG REGISTRY_KEY=early-adopters-registry.json
+
 ARG TAO_DOMAIN="tao-community-edition.local"
 
 ARG OS_VARIANT="TAO Community Edition - Cozy"
@@ -39,14 +39,12 @@ ARG TIMEZONE="UTC"
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG REGISTRY_KEY
 
-COPY --from=secrets /${REGISTRY_KEY} /etc/tao-ce/auth/registry.json
+COPY ./config/packages.lst /run/context/packages.lst
 
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,target=/run/context/packages.lst,source=config/packages.lst \
     cat /run/context/packages.lst \
         | grep -v '^#' \
         | grep -v '^[ ]*$' \
@@ -55,8 +53,8 @@ RUN \
                 --setopt=install_weak_deps=false \
                 install -y
 
+COPY ./config/images.lst /run/context/images.lst
 RUN \
-    --mount=type=bind,target=/run/context/images.lst,source=config/images.lst \
     cat /run/context/images.lst \
         | grep -v '^#' \
         | grep -v '^[ ]*$' \
@@ -71,4 +69,16 @@ RUN \
     && systemctl enable \
         sshd.service \
         avahi-daemon.service \
+    && dnf clean all
+
+FROM vm AS pi
+
+RUN \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
+    dnf install -y \
+        uboot-images-armv8 \
+        bcm2711-firmware \
+        bcm283x-firmware \
+        bcm283x-overlays \
     && dnf clean all

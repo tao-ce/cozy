@@ -13,6 +13,7 @@ Volume=/var/lib/tao-ce/dependencies/firestore:/data:z,U
 Restart=always
 ExecStartPre=mkdir -p /var/lib/tao-ce/dependencies/firestore
 RestartSec=5s
+TimeoutStartSec=600s
 
 [Install]
 WantedBy=multi-user.target
