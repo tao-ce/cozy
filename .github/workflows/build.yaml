@@ -4,8 +4,16 @@ on:
     # branches:
       # - main
 
+env:
+  REGISTRY: ghcr.io/tao-ce/cozy
+
 jobs:
   build:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     runs-on: ubuntu-24.04-arm
 
     steps:
@@ -18,7 +26,7 @@ jobs:
       id: build-image
       uses: redhat-actions/buildah-build@v2
       with:
-        image: quay.io/tao-ce/cozy/pi
+        image: ${{ env.REGISTRY }}/pi
         tags: latest ${{ github.sha }}
         containerfiles:
           ./Containerfile
@@ -28,12 +36,23 @@ jobs:
         extra-args: |
           --target pi
 
+    - name: Push Image
+      uses: redhat-actions/push-to-registry@v2
+      with:
+        image: ${{ steps.build-image.outputs.image }}
+        tags: ${{ steps.build-image.outputs.tags }}
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+        registry: ghcr.io/${{ github.repository_owner }}
+        extra-args: |
+          --disable-content-trust
+
     - name: Build Pi Image
       id: build-pi-image
       uses: osbuild/bootc-image-builder-action@main
       with:
         config-file: ./config/bootc.toml
-        image: quay.io/tao-ce/cozy/pi:latest
+        image: ${{ env.REGISTRY }}/pi:latest
         types: |
           raw
         rootfs: xfs
