@@ -34,7 +34,7 @@ jobs:
           FEDORA_VERSION=44
           FEDORA_FLAVOR=quay.io/fedora/fedora-bootc
         extra-args: |
-          --target pi
+          --target base
 
     - name: Push Image
       uses: redhat-actions/push-to-registry@v2
@@ -46,6 +46,13 @@ jobs:
         registry: ghcr.io/${{ github.repository_owner }}
         extra-args: |
           --disable-content-trust
+
+    - name: Login registry
+      uses: redhat-actions/podman-login@v2
+      with:
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+        registry: ghcr.io/${{ github.repository_owner }}
 
     - name: Build Pi Image
       id: build-pi-image

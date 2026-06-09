@@ -4,17 +4,10 @@ patch
 btop
 iptables-legacy
 netcat
-git
-firefox
 curl
 dnsutils
-skopeo
-pre-commit
 xdg-utils
 openssl
-jq
-yq
-chromium
 cockpit-system
 cockpit-ostree
 cockpit-podman
