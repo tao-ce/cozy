@@ -11,13 +11,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
 
     - name: Build Image
       id: build-image
       uses: redhat-actions/buildah-build@v2
       with:
         image: quay.io/tao-ce/cozy/pi
-        target: pi
         tags: latest ${{ github.sha }}
         containerfiles:
           ./Containerfile
