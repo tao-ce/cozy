@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
 
@@ -52,9 +52,26 @@ jobs:
             --use-librepo \
             ${{ env.REGISTRY }}/pi:latest
 
+    - name: Copy EFI Bootloader
+      run: |
+        sudo apt-get install libguestfs-tools -y
+        sudo guestfish \
+          -m /dev/sda3:/ \
+          -m /dev/sda2:/boot \
+          -m /dev/sda1:/boot/efi \
+          -a ./output/disk.raw  <<EOF
+        glob cp /ostree/boot.1/default/*/0/usr/share/uboot/rpi_arm64/u-boot.bin /boot/efi/rpi-u-boot.bin
+        glob cp-a /ostree/boot.1/default/*/0/boot/efi/* /boot/efi/
+        EOF
+
+    - name: Compress Image
+      run: |
+        xz ./output/image/disk.raw
+
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: pi-image
-        path: ./output
+        path: ./output/image/disk.raw.xz
+        archive: false
         if-no-files-found: error
