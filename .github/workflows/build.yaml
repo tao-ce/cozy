@@ -48,7 +48,7 @@ jobs:
           --disable-content-trust
 
     - name: Login registry
-      uses: redhat-actions/podman-login@v2
+      uses: redhat-actions/podman-login@main
       with:
         username: ${{ github.actor }}
         password: ${{ github.token }}
