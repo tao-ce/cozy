@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io/tao-ce/cozy
-  FS_TYPE: xfs 
+  FS_TYPE: btrfs
 
 jobs:
   build:
@@ -65,7 +65,7 @@ jobs:
 
     - name: Copy EFI Bootloader
       run: |
-        sudo apt-get install -y --no-install-recommends --no-install-suggests \
+        sudo apt-get install -y \
           libguestfs-tools
         [ "${{ env.FS_TYPE }}" = "btrfs" ] && ROOT_MOUNT_POINT="/:subvol=root" || ROOT_MOUNT_POINT="/"
         sudo guestfish \
