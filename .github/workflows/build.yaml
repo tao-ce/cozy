@@ -45,7 +45,7 @@ jobs:
           -v  /var/lib/containers/storage:/var/lib/containers/storage \
           quay.io/centos-bootc/bootc-image-builder:latest \
             --type raw \
-            --rootfs xfs \
+            --rootfs btrfs \
             --chown $(id -u):$(id -g) \
             --log-level debug \
             -vv \
@@ -54,7 +54,8 @@ jobs:
 
     - name: Copy EFI Bootloader
       run: |
-        sudo apt-get install libguestfs-tools -y
+        sudo apt-get install -y --no-install-recommends --no-install-suggests \
+          libguestfs-tools
         sudo guestfish \
           -m /dev/sda3:/ \
           -m /dev/sda2:/boot \
