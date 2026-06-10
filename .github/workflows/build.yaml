@@ -58,18 +58,18 @@ jobs:
             --use-librepo \
             ${{ env.REGISTRY }}/pi:latest
 
-    - name: Copy EFI Bootloader
-      run: |
-        sudo apt-get install -y --no-install-recommends --no-install-suggests \
-          libguestfs-tools
-        sudo guestfish \
-          -m /dev/sda3:/ \
-          -m /dev/sda2:/boot \
-          -m /dev/sda1:/boot/efi \
-          -a ./output/image/disk.raw  <<EOF
-        glob cp /ostree/boot.1/default/*/0/usr/share/uboot/rpi_arm64/u-boot.bin /boot/efi/rpi-u-boot.bin
-        glob cp-a /ostree/boot.1/default/*/0/boot/efi/* /boot/efi/
-        EOF
+    # - name: Copy EFI Bootloader
+    #   run: |
+    #     sudo apt-get install -y --no-install-recommends --no-install-suggests \
+    #       libguestfs-tools
+    #     sudo guestfish \
+    #       -m /dev/sda3:/ \
+    #       -m /dev/sda2:/boot \
+    #       -m /dev/sda1:/boot/efi \
+    #       -a ./output/image/disk.raw  <<EOF
+    #     glob cp /ostree/boot.1/default/*/0/usr/share/uboot/rpi_arm64/u-boot.bin /boot/efi/rpi-u-boot.bin
+    #     glob cp-a /ostree/boot.1/default/*/0/boot/efi/* /boot/efi/
+    #     EOF
 
     - name: Compress Image
       run: |

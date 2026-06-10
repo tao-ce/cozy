@@ -21,14 +21,14 @@ RUN dnf -y swap fedora-release generic-release --allowerasing \
     && echo 'VARIANT="${OS_VARIANT}"' >>/usr/lib/os-release \
     && echo 'VARIANT_ID="${OS_VARIANT_ID}"' >>/usr/lib/os-release
 
-FROM node:24 AS build-cockpit
+# FROM node:24 AS build-cockpit
 
-ENV NODE_ENV=production
-WORKDIR /app
-COPY src/cockpit-tao-ce/ /app/
-RUN \
-    --mount=type=cache,id=npm-cache,target=/root/.npm,sharing=locked \
-    make
+# ENV NODE_ENV=production
+# WORKDIR /app
+# COPY src/cockpit-tao-ce/ /app/
+# RUN \
+#     --mount=type=cache,id=npm-cache,target=/root/.npm,sharing=locked \
+#     make
 
 FROM base AS vm
 
@@ -61,8 +61,8 @@ RUN \
 #         | xargs -n1 \
 #             podman pull
 
-COPY root/ /
-COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/
+# COPY root/ /
+# COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/
 
 RUN \
     ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
