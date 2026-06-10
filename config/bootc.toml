@@ -6,4 +6,5 @@ groups = ["wheel" ]
 
 [[customizations.filesystem]]
 mountpoint = "/"
+minsize = "2 GiB"
 
