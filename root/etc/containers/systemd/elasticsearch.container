@@ -11,8 +11,16 @@ Environment=discovery.type=single-node
 Environment=ES_JAVA_OPTS="-Xms1024m -Xmx2048m"
 Environment=DISABLE_SECURITY_PLUGIN=true
 Environment=xpack.security.enabled=false
+Environment=xpack.security.enrollment.enabled=false
 Environment=xpack.security.transport.ssl.enabled=false
 Environment=xpack.security.http.ssl.enabled=false
+Environment=xpack.ml.enabled=false
+Environment=thread_pool.search.queue_size=100
+Environment=thread_pool.write.queue_size=200
+Environment=indices.memory.index_buffer_size=128mb
+Environment=indices.queries.cache.size=64mb
+Environment=indices.fielddata.cache.size=128mb
+
 Volume=/var/lib/tao-ce/dependencies/es:/usr/share/elasticsearch/data:z,U
 
 [Service]
