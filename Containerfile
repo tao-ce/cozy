@@ -61,7 +61,7 @@ RUN \
 #         | xargs -n1 \
 #             podman pull
 
-# COPY root/ /
+COPY root/ /
 COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/
 
 RUN \

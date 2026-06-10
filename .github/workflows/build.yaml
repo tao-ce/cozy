@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io/tao-ce/cozy
-  FS_TYPE: btrfs
+  FS_TYPE: xfs 
 
 jobs:
   build:
