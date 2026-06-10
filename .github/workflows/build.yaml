@@ -22,6 +22,12 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Setup cache
+      uses: actions/cache@v5
+      with:
+        path: /var/lib/containers/storage
+        key: ${{ runner.os }}-${{ runner.arch }}-containers-storage
+
     - name: Build Image
       run: |
         sudo buildah build \
