@@ -42,6 +42,15 @@ ARG TARGETOS
 ARG TARGETARCH
 ARG FLAVOR
 
+COPY ./config/images.lst /run/context/images.lst
+COPY ./config/images.${FLAVOR}.lst /run/context/images.${FLAVOR}.lst
+RUN \
+    cat /run/context/images.*.lst \
+        | grep -v '^#' \
+        | grep -v '^[ ]*$' \
+        | xargs -n1 \
+            podman pull
+
 COPY ./config/packages.common.lst /run/context/packages.common.lst
 COPY ./config/packages.${FLAVOR}.lst /run/context/packages.${FLAVOR}.lst
 
@@ -55,14 +64,6 @@ RUN \
             dnf \
                 --setopt=install_weak_deps=false \
                 install -y
-
-COPY ./config/images.lst /run/context/images.lst
-RUN \
-    cat /run/context/images.lst \
-        | grep -v '^#' \
-        | grep -v '^[ ]*$' \
-        | xargs -n1 \
-            podman pull
 
 COPY root/ /
 COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/

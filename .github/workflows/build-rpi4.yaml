@@ -6,6 +6,7 @@ on:
       - build/**
     paths:
       - config/bootc.toml
+      - config/images.common.lst
       - config/packages.common.lst
       - config/packages.rpi4.lst
       - root/**
