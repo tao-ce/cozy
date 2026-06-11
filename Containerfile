@@ -42,7 +42,7 @@ ARG TARGETOS
 ARG TARGETARCH
 ARG FLAVOR
 
-COPY ./config/images.lst /run/context/images.lst
+COPY ./config/images.common.lst /run/context/images.common.lst
 COPY ./config/images.${FLAVOR}.lst /run/context/images.${FLAVOR}.lst
 RUN \
     cat /run/context/images.*.lst \
