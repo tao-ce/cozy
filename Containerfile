@@ -1,5 +1,6 @@
 ARG FEDORA_VERSION=44
 ARG FEDORA_FLAVOR=quay.io/fedora-ostree-desktops/kinoite
+ARG FLAVOR=vm
 
 ARG TAO_DOMAIN="tao-community-edition.local"
 
@@ -30,7 +31,7 @@ RUN \
     --mount=type=cache,id=npm-cache,target=/root/.npm,sharing=locked \
     make
 
-FROM base AS vm
+FROM base AS appliance
 
 LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
 
@@ -39,13 +40,15 @@ ARG TIMEZONE="UTC"
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
+ARG FLAVOR
 
-COPY ./config/packages.lst /run/context/packages.lst
+COPY ./config/packages.common.lst /run/context/packages.common.lst
+COPY ./config/packages.${FLAVOR}.lst /run/context/packages.${FLAVOR}.lst
 
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    cat /run/context/packages.lst \
+    cat /run/context/packages.*.lst \
         | grep -v '^#' \
         | grep -v '^[ ]*$' \
         | xargs \
@@ -69,16 +72,4 @@ RUN \
     && systemctl enable \
         sshd.service \
         avahi-daemon.service \
-    && dnf clean all
-
-FROM vm AS pi
-
-RUN \
-    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
-    --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    dnf install -y \
-        uboot-images-armv8 \
-        bcm2711-firmware \
-        bcm283x-firmware \
-        bcm283x-overlays \
     && dnf clean all

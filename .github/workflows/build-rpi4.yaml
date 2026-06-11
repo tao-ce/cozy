@@ -1,12 +1,21 @@
-name: Build
+name: Build Raspberry Pi 4 Image
 on:
   push:
-    # branches:
-      # - main
+    branches:
+      - main
+      - build/**
+    paths:
+      - config/bootc.toml
+      - config/packages.common.lst
+      - config/packages.rpi4.lst
+      - root/**
+      - Containerfile
+      - .github/workflows/build-rpi4.yaml
 
 env:
   REGISTRY: ghcr.io/tao-ce/cozy
   FS_TYPE: btrfs
+  FEDORA_VERSION: "44"
 
 jobs:
   build:
@@ -36,10 +45,12 @@ jobs:
     - name: Build Image
       run: |
         sudo buildah build \
-          -t ${{ env.REGISTRY }}/pi:latest \
+          -t ${{ env.REGISTRY }}/rpi4:latest \
           --build-arg FEDORA_FLAVOR=quay.io/fedora/fedora-bootc \
-          --build-arg FEDORA_VERSION=44 \
-          --target pi \
+          --build-arg FEDORA_VERSION=${{ env.FEDORA_VERSION }} \
+          --build-arg FLAVOR=rpi4 \
+          --target appliance \
+          --network=host \
           --layers \
           .
 
@@ -61,7 +72,7 @@ jobs:
             --log-level debug \
             -vv \
             --use-librepo \
-            ${{ env.REGISTRY }}/pi:latest
+            ${{ env.REGISTRY }}/rpi4:latest
 
     - name: Copy EFI Bootloader
       run: |
