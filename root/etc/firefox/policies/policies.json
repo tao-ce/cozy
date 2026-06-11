@@ -12,24 +12,6 @@
                 "Placement": "toolbar",
                 "Title": "Portal",
                 "URL": "https://tao-community-edition.local/portal/"
-            },
-            {
-                "Folder": "Debugging tools",
-                "Placement": "toolbar",
-                "Title": "Kibana",
-                "URL": "http://kibana.deps:5601"
-            },
-            {
-                "Folder": "Debugging tools",
-                "Placement": "toolbar",
-                "Title": "PubSub UI",
-                "URL": "http://pubsub-ui.deps"
-            },
-            {
-                "Folder": "TAO Community Edition",
-                "Placement": "toolbar",
-                "Title": "Devkit",
-                "URL": "https://tao-community-edition.local/devkit/"
             }
         ],
         "Certificates": {

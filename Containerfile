@@ -1,6 +1,7 @@
-ARG FEDORA_VERSION=42
+ARG FEDORA_VERSION=44
 ARG FEDORA_FLAVOR=quay.io/fedora-ostree-desktops/kinoite
-ARG REGISTRY_KEY=early-adopters-registry.json
+ARG FLAVOR=vm
+
 ARG TAO_DOMAIN="tao-community-edition.local"
 
 ARG OS_VARIANT="TAO Community Edition - Cozy"
@@ -30,7 +31,7 @@ RUN \
     --mount=type=cache,id=npm-cache,target=/root/.npm,sharing=locked \
     make
 
-FROM base AS vm
+FROM base AS appliance
 
 LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
 
@@ -39,29 +40,30 @@ ARG TIMEZONE="UTC"
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG REGISTRY_KEY
+ARG FLAVOR
 
-COPY --from=secrets /${REGISTRY_KEY} /etc/tao-ce/auth/registry.json
+COPY ./config/images.common.lst /run/context/images.common.lst
+COPY ./config/images.${FLAVOR}.lst /run/context/images.${FLAVOR}.lst
+RUN \
+    cat /run/context/images.*.lst \
+        | grep -v '^#' \
+        | grep -v '^[ ]*$' \
+        | xargs -n1 \
+            podman pull
+
+COPY ./config/packages.common.lst /run/context/packages.common.lst
+COPY ./config/packages.${FLAVOR}.lst /run/context/packages.${FLAVOR}.lst
 
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    --mount=type=bind,target=/run/context/packages.lst,source=config/packages.lst \
-    cat /run/context/packages.lst \
+    cat /run/context/packages.*.lst \
         | grep -v '^#' \
         | grep -v '^[ ]*$' \
         | xargs \
             dnf \
                 --setopt=install_weak_deps=false \
                 install -y
-
-RUN \
-    --mount=type=bind,target=/run/context/images.lst,source=config/images.lst \
-    cat /run/context/images.lst \
-        | grep -v '^#' \
-        | grep -v '^[ ]*$' \
-        | xargs -n1 \
-            podman pull
 
 COPY root/ /
 COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/

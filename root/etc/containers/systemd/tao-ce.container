@@ -9,17 +9,19 @@ After=firestore-emulator.container
 
 [Container]
 
-Image=europe-west1-docker.pkg.dev/tao-ce/early-adopters/tao-ce:latest
+Image=quay.io/tao-ce/tao-ce:latest
 PublishPort=443:443
 IP=10.247.40.73
 Network=deps.network
 Volume=/var/lib/tao-ce/data:/var/lib/tao-ce:z,U
 Volume=/etc/tao-ce/config/tao.yaml:/etc/tao-ce/config/tao.yaml:z,U
-PodmanArgs=--privileged --authfile=/etc/tao-ce/auth/registry.json
+Volume=/etc/tao-ce/systemd/system/tao-ce.construct.backend.service.d:/etc/systemd/system/tao-ce.construct.backend.service.d:z,U
+PodmanArgs=--privileged
 
 [Service]
 Restart=always
 RestartSec=30s
+TimeoutStartSec=1200s
 ExecStartPre=mkdir -p /var/lib/tao-ce/data
 
 [Install]
