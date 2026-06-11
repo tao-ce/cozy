@@ -7,7 +7,8 @@ ARG TAO_DOMAIN="tao-community-edition.local"
 ARG OS_VARIANT="TAO Community Edition - Cozy"
 ARG OS_VARIANT_ID="com.taotesting.cozy"
 
-FROM ${FEDORA_FLAVOR}:${FEDORA_VERSION} AS base
+
+FROM ${FEDORA_FLAVOR}:${FEDORA_VERSION} AS appliance
 
 ARG TARGETPLATFORM
 ARG TARGETOS
@@ -16,31 +17,17 @@ ARG FEDORA_VERSION
 ARG FEDORA_FLAVOR
 ARG OS_VARIANT
 ARG OS_VARIANT_ID
+ARG TAO_DOMAIN
+ARG TIMEZONE="UTC"
+ARG FLAVOR
+ARG COCKPIT_TAO_CE_VERSION='0.0.0'
+
+LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
 
 RUN dnf -y swap fedora-release generic-release --allowerasing \
     && dnf -y remove kdeconnectd  kde-connect \
     && echo 'VARIANT="${OS_VARIANT}"' >>/usr/lib/os-release \
     && echo 'VARIANT_ID="${OS_VARIANT_ID}"' >>/usr/lib/os-release
-
-FROM node:24 AS build-cockpit
-
-ENV NODE_ENV=production
-WORKDIR /app
-COPY src/cockpit-tao-ce/ /app/
-RUN \
-    --mount=type=cache,id=npm-cache,target=/root/.npm,sharing=locked \
-    make
-
-FROM base AS appliance
-
-LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
-
-ARG TAO_DOMAIN
-ARG TIMEZONE="UTC"
-ARG TARGETPLATFORM
-ARG TARGETOS
-ARG TARGETARCH
-ARG FLAVOR
 
 COPY ./config/images.common.lst /run/context/images.common.lst
 COPY ./config/images.${FLAVOR}.lst /run/context/images.${FLAVOR}.lst
@@ -66,7 +53,13 @@ RUN \
                 install -y
 
 COPY root/ /
-COPY --from=build-cockpit /app/dist/ /usr/share/cockpit/tao-ce/
+ADD https://github.com/tao-ce/cockpit-tao-ce/releases/download/${COCKPIT_TAO_CE_VERSION}/cockpit-tao-ce-${COCKPIT_TAO_CE_VERSION}.tar.xz /run/tmp/cockpit-tao-ce.tar.xz
+RUN mkdir -p /usr/share/cockpit/tao-ce/ \
+    && tar -xf \
+        /run/tmp/cockpit-tao-ce.tar.xz \
+        -C /usr/share/cockpit/tao-ce/ \
+        --strip-components=2 \
+        cockpit-tao-ce/dist
 
 RUN \
     ln -s /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
