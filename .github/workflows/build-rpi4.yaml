@@ -26,8 +26,8 @@ jobs:
         include:
         - fedora_flavor: quay.io/fedora/fedora-bootc
           name: lite
-        - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
-          name: kde
+#        - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
+#          name: kde
     permissions:
       contents: read
       packages: write
