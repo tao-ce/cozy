@@ -82,7 +82,7 @@ jobs:
             -vv \
             --use-librepo \
             ${{ env.REGISTRY }}/vm/${{ matrix.name }}:latest
-        sudo mv ./output/${{ matrix.name }}/image/disk.vmdk ./output/vm-image-${{ matrix.name }}.vmdk
+        sudo mv ./output/${{ matrix.name }}/vmdk/disk.vmdk ./output/vm-image-${{ matrix.name }}.vmdk
 
 
     - name: Upload Artifact

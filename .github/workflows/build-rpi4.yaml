@@ -92,7 +92,7 @@ jobs:
           -m /dev/sda3:${ROOT_MOUNT_POINT} \
           -m /dev/sda2:/boot \
           -m /dev/sda1:/boot/efi \
-          -a ./output/image/disk.raw  <<EOF
+          -a ./output/${{ matrix.name }}/image/disk.raw  <<EOF
         glob cp /ostree/boot.1/default/*/0/usr/share/uboot/rpi_arm64/u-boot.bin /boot/efi/rpi-u-boot.bin
         glob cp-a /ostree/boot.1/default/*/0/boot/efi/* /boot/efi/
         EOF
