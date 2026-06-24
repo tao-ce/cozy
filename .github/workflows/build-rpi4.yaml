@@ -85,6 +85,7 @@ jobs:
 
     - name: Copy EFI Bootloader
       run: |
+        sudo apt-get update -y
         sudo apt-get install -y \
           libguestfs-tools
         [ "${{ env.FS_TYPE }}" = "btrfs" ] && ROOT_MOUNT_POINT="/:subvol=root" || ROOT_MOUNT_POINT="/"
