@@ -59,8 +59,7 @@ RUN \
     dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel && \
     dnf remove -y kernel-uki-dtbloader kernel-modules-core
 
-# RUN set -eux; \
-#     ls -lrth /usr/lib/modules /boot; \
+RUN ls -lrth /usr/lib/modules /boot
 #     kver="$(ls -1 /usr/lib/modules | sort -V | tail -n1)"; \
 #     cp "/boot/Image-${kver}" "/usr/lib/modules/${kver}/vmlinuz"; \
 #     dracut --force "/usr/lib/modules/${kver}/initramfs.img" "${kver}"
