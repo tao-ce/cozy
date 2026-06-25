@@ -56,8 +56,11 @@ ADD \
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel
+    dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel && \
+    dnf remove -y kernel-uki-dtbloader kernel-modules-core
+
 RUN set -eux; \
+    ls -lrth /usr/lib/modules; \
     kver="$(ls -1 /usr/lib/modules | sort -V | tail -n1)"; \
     cp "/boot/Image-${kver}" "/usr/lib/modules/${kver}/vmlinuz"; \
     dracut --force "/usr/lib/modules/${kver}/initramfs.img" "${kver}"
