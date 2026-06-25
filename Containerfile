@@ -52,6 +52,7 @@ ADD \
     https://copr.fedorainfracloud.org/coprs/dwrobel/bcm434xx-firmware-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo \
     /etc/yum.repos.d/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo
 
+RUN ls -lrth /usr/lib/modules /boot /usr/lib/ostree-boot 
 
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
@@ -59,7 +60,7 @@ RUN \
     dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel && \
     dnf remove -y kernel-uki-dtbloader kernel-modules-core
 
-RUN ls -lrth /usr/lib/modules /boot
+RUN ls -lrth /usr/lib/modules /boot /usr/lib/ostree-boot 
 #     kver="$(ls -1 /usr/lib/modules | sort -V | tail -n1)"; \
 #     cp "/boot/Image-${kver}" "/usr/lib/modules/${kver}/vmlinuz"; \
 #     dracut --force "/usr/lib/modules/${kver}/initramfs.img" "${kver}"
