@@ -64,7 +64,7 @@ RUN \
         --remove kernel-modules-core \
         kernel kernel-{core,modules} \
         && cd /usr/lib/modules/*/ && gzip -c vmlinux >vmlinuz  \
-        && dracut --force initramfs.img $(ls -1 /usr/lib/modules/*/ | sort -V | tail -n1)
+        && dracut --force initramfs.img "$(expr $(pwd) : '.*[/]\([^/]*\)$')"
 
 RUN ls -lrth /usr/lib/modules/* /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
     
