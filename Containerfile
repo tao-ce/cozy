@@ -41,7 +41,17 @@ RUN \
 COPY ./config/packages.common.lst /run/context/packages.common.lst
 COPY ./config/packages.${FLAVOR}.lst /run/context/packages.${FLAVOR}.lst
 
-ADD https://copr.fedorainfracloud.org/coprs/pbrobinson/a64-kernel/repo/fedora-${FEDORA_VERSION}/pbrobinson-a64-kernel-fedora-${FEDORA_VERSION}.repo /etc/yum.repos.d/pbrobinson-a64-kernel-fedora-${FEDORA_VERSION}.repo
+# ADD https://copr.fedorainfracloud.org/coprs/pbrobinson/a64-kernel/repo/fedora-${FEDORA_VERSION}/pbrobinson-a64-kernel-fedora-${FEDORA_VERSION}.repo /etc/yum.repos.d/pbrobinson-a64-kernel-fedora-${FEDORA_VERSION}.repo
+ADD \
+    https://copr.fedorainfracloud.org/coprs/dwrobel/kernel-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-kernel-rpi-fedora-${FEDORA_VERSION}.repo \
+    /etc/yum.repos.d/dwrobel-kernel-rpi-fedora-${FEDORA_VERSION}.repo
+ADD \
+    https://copr.fedorainfracloud.org/coprs/dwrobel/bcm283x-firmware-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-bcm283x-firmware-rpi-fedora-${FEDORA_VERSION}.repo \
+    /etc/yum.repos.d/dwrobel-bcm283x-firmware-rpi-fedora-${FEDORA_VERSION}.repo
+ADD \
+    https://copr.fedorainfracloud.org/coprs/dwrobel/bcm434xx-firmware-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo \
+    /etc/yum.repos.d/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo
+
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
