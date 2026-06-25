@@ -1,7 +1,7 @@
 uboot-images-armv8
 bcm2711-firmware
 bcm2712-firmware
-kernel-rpi
+kernel
 @arm-tools
 chrony
 bcm283x-firmware
