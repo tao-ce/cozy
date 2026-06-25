@@ -57,14 +57,12 @@ RUN ls -lrth /usr/lib/modules /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostr
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    rpm-ostree override remove \
+    rpm-ostree override replace\
+        --freeze \
+        --experimental \
         --from repo='copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi' \
-         kernel kernel-{core,modules,modules-core} \
-         --install kernel \
-         --install kernel-modules \
-         --install kernel-core \
-         --install kernel-modules-core \
-         --install kernel-modules-extra
+        --remove kernel-modules-core \
+        kernel kernel-{core,modules} 
 
 RUN ls -lrth /usr/lib/modules /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
     
