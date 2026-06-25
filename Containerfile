@@ -38,8 +38,8 @@ LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
 #         | xargs -n1 \
 #             podman pull
 
-# COPY ./config/packages.common.lst /run/context/packages.common.lst
-# COPY ./config/packages.${FLAVOR}.lst /run/context/packages.${FLAVOR}.lst
+COPY ./config/packages.common.lst /run/context/packages.common.lst
+COPY ./config/packages.${FLAVOR}.lst /run/context/packages.${FLAVOR}.lst
 
 # ADD https://copr.fedorainfracloud.org/coprs/pbrobinson/a64-kernel/repo/fedora-${FEDORA_VERSION}/pbrobinson-a64-kernel-fedora-${FEDORA_VERSION}.repo /etc/yum.repos.d/pbrobinson-a64-kernel-fedora-${FEDORA_VERSION}.repo
 ADD \
@@ -52,8 +52,6 @@ ADD \
     https://copr.fedorainfracloud.org/coprs/dwrobel/bcm434xx-firmware-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo \
     /etc/yum.repos.d/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo
 
-RUN ls -lrth /usr/lib/modules/* /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
-
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
@@ -65,19 +63,17 @@ RUN \
         kernel kernel-{core,modules} \
         && cd /usr/lib/modules/*/ && gzip -c vmlinux >vmlinuz  \
         && dracut --force initramfs.img "$(expr $(pwd) : '.*[/]\([^/]*\)$')"
-
-RUN ls -lrth /usr/lib/modules/* /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
     
-# RUN \
-#     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
-#     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-#     cat /run/context/packages.*.lst \
-#         | grep -v '^#' \
-#         | grep -v '^[ ]*$' \
-#         | xargs \
-#             dnf \
-#                 --setopt=install_weak_deps=false \
-#                 install -y
+RUN \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
+    cat /run/context/packages.*.lst \
+        | grep -v '^#' \
+        | grep -v '^[ ]*$' \
+        | xargs \
+            dnf \
+                --setopt=install_weak_deps=false \
+                install -y
 # # 
 # COPY root/ /
 # ADD https://github.com/tao-ce/cockpit-tao-ce/releases/download/${COCKPIT_TAO_CE_VERSION}/cockpit-tao-ce-${COCKPIT_TAO_CE_VERSION}.tar.xz /run/tmp/cockpit-tao-ce.tar.xz
