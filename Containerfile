@@ -58,8 +58,6 @@ RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
     rpm-ostree override remove \
-        --experimental \
-        --freeze \
         --from repo='copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi' \
          kernel kernel-{core,modules,modules-core} \
          --install kernel \
