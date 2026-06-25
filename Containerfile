@@ -52,6 +52,12 @@ ADD \
     https://copr.fedorainfracloud.org/coprs/dwrobel/bcm434xx-firmware-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo \
     /etc/yum.repos.d/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo
 
+
+RUN \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
+    dnf -y swap --from-repo=dwrobel-kernel-rpi-fedora-${FEDORA_VERSION} kernel kernel
+
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
