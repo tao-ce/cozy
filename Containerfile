@@ -52,7 +52,7 @@ ADD \
     https://copr.fedorainfracloud.org/coprs/dwrobel/bcm434xx-firmware-rpi/repo/fedora-${FEDORA_VERSION}/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo \
     /etc/yum.repos.d/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo
 
-RUN ls -lrth /usr/lib/modules /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
+RUN ls -lrth /usr/lib/modules/* /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
 
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
@@ -64,7 +64,7 @@ RUN \
         --remove kernel-modules-core \
         kernel kernel-{core,modules} 
 
-RUN ls -lrth /usr/lib/modules /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
+RUN ls -lrth /usr/lib/modules/* /boot /usr/lib/ostree-boot /boot/efi /usr/lib/ostree-boot/efi || true
     
 # RUN \
 #     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
