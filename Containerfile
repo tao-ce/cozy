@@ -56,7 +56,7 @@ ADD \
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    dnf -y swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel
+    dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel
 
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
