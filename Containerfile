@@ -53,26 +53,14 @@ ADD \
     /etc/yum.repos.d/dwrobel-bcm434xx-firmware-rpi-fedora-${FEDORA_VERSION}.repo
 
 
-# RUN \
-#     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
-#     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-#     dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel
-RUN --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+RUN \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
-    dnf -y --no-best \
-      --setopt=install_weak_deps=False \
-      --repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi \
-      install \
-        kernel-6.18.32-1.rpi.fc44 \
-        kernel-core-6.18.32-1.rpi.fc44 \
-        kernel-modules-6.18.32-1.rpi.fc44 && \
-    dnf -y remove \
-        'kernel-core-7.*' \
-        'kernel-modules-7.*' \
-        'kernel-modules-core-7.*' \
-        kernel-uki-dtbloader || true && \
-    depmod -a 6.18.32-1.rpi.fc44.aarch64
-
+    dnf -y --no-best swap --from-repo=copr:copr.fedorainfracloud.org:dwrobel:kernel-rpi kernel kernel
+RUN set -eux; \
+    kver="$(ls -1 /usr/lib/modules | sort -V | tail -n1)"; \
+    cp "/boot/Image-${kver}" "/usr/lib/modules/${kver}/vmlinuz"; \
+    dracut --force "/usr/lib/modules/${kver}/initramfs.img" "${kver}"
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
