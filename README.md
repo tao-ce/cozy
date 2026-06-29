@@ -6,6 +6,7 @@
 
 
 [![RPi4](https://github.com/tao-ce/cozy/actions/workflows/build-rpi4.yaml/badge.svg)](https://github.com/tao-ce/cozy/actions/workflows/build-rpi4.yaml)
+[![VM](https://github.com/tao-ce/cozy/actions/workflows/build-vm.yaml/badge.svg)](https://github.com/tao-ce/cozy/actions/workflows/build-vm.yaml)
 
 [TAO Community Edition](https://github.com/tao-ce/tao-ce) is usually shipped as a container image.
 
