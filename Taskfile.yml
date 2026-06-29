@@ -2,40 +2,101 @@ version: '3'
 
 method: checksum
 
-includes:
-  artifacts:cozy:
-    taskfile: ../crystal
-    dir: .
-    vars:
-      APP: tao-ce-vm
-      NAMESPACE: "-"
-      TARGET: vm
-      SUDO: sudo -E
-      CONTEXTS:
-        map:
-          secrets: ../../.secrets
-      ARGS:
-        map:
-          FEDORA_IMAGE: quay.io/fedora-ostree-desktops/kinoite
-      IMAGE: 'localhost/tao-ce/tao-ce-vm'
+vars:
+  REGISTRY: 'localhost'
 
-  utils:
-    taskfile: ../utils
-    dir: ../..
+# includes:
+  # artifacts:cozy-pi:
+  #   taskfile: ../crystal
+  #   dir: .
+  #   vars:
+  #     APP: tao-ce-pi
+  #     NAMESPACE: "-"
+  #     TARGET: pi
+  #     SUDO: sudo -E
+  #     CONTEXTS:
+  #       map:
+  #         secrets: ../../.secrets
+  #     ARGS:
+  #       map:
+  #         FEDORA_FLAVOR: quay.io/fedora/fedora-bootc
+  #     IMAGE: 'localhost/tao-ce/tao-ce-pi'
+
+  # utils:
+  #   taskfile: ../utils
+  #   dir: ../..
+
+  # artifacts:cozy:
+  #   taskfile: ../crystal
+  #   dir: .
+  #   vars:
+  #     APP: tao-ce-vm
+  #     NAMESPACE: "-"
+  #     TARGET: vm
+  #     SUDO: sudo -E
+  #     CONTEXTS:
+  #       map:
+  #         secrets: ../../.secrets
+  #     ARGS:
+  #       map:
+  #         FEDORA_IMAGE: quay.io/fedora-ostree-desktops/kinoite
+  #     IMAGE: 'localhost/tao-ce/tao-ce-vm'
+
+  # utils:
+    # taskfile: ../utils
+    # dir: ../..
 
 tasks:
-  build:
-    deps:
-    - task: artifacts:cozy:build
-    cmds:
-    - task: build:bootc
-    - task: build:vmdk
-    - task: build:ova
+  # build:
+  #   deps:
+  #   - task: artifacts:cozy:build
+  #   cmds:
+  #   - task: build:bootc
+  #   - task: build:vmdk
+  #   - task: build:ova
   
-  push:
+  # push:
+    # cmds:
+    # - task: utils:gcloud:setup
+    # - task: push:ova
+
+  pi:payload:
+    set:
+      - pipefail
     cmds:
-    - task: utils:gcloud:setup
-    - task: push:ova
+    - |
+      mkdir -p .cache/artifacts/cozy-pi
+      sudo buildah build \
+        -t {{ .REGISTRY }}/tao-ce/tao-ce-pi:dev-latest \
+        --network=host \
+        --build-arg FEDORA_FLAVOR=quay.io/fedora/fedora-bootc \
+        --target pi \
+        --layers \
+        .
+  
+  pi:build:
+    set:
+      - pipefail
+    cmds:
+    - |
+      mkdir -p .cache/artifacts/cozy-pi
+      date -Iminutes --utc | cut -f1 -d+ | tr ':' '-' >.cache/artifacts/cozy-pi/TS
+      sudo podman run \
+        --rm \
+        -it \
+        --privileged \
+        --security-opt label=type:unconfined_t \
+        -v ./config/bootc.toml:/config.toml:ro \
+        -v ./.cache/artifacts/cozy-pi:/output \
+        -v  /var/lib/containers/storage:/var/lib/containers/storage \
+        quay.io/centos-bootc/bootc-image-builder:latest \
+          --type raw \
+          --rootfs xfs \
+          --chown $(id -u):$(id -g) \
+          --log-level debug \
+          -vv \
+          --use-librepo \
+          {{.REGISTRY}}/tao-ce-pi:dev-latest
 
   build:bootc:
     set:
@@ -49,7 +110,7 @@ tasks:
         -it \
         --privileged \
         --pull=newer \
-        -v ./build/cozy/config/bootc.toml:/config.toml:ro \
+        -v ./config/bootc.toml:/config.toml:ro \
         -v ./.cache/artifacts/cozy:/output \
         -v  /var/lib/containers/storage:/var/lib/containers/storage \
         quay.io/centos-bootc/bootc-image-builder:latest \
