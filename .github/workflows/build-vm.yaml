@@ -60,7 +60,6 @@ jobs:
           --build-arg FLAVOR=vm \
           --target appliance \
           --network=host \
-          --layers \
           .
 
     - name: Build VM Image

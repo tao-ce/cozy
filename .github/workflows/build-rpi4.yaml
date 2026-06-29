@@ -60,7 +60,6 @@ jobs:
           --build-arg FLAVOR=rpi4 \
           --target appliance \
           --network=host \
-          --layers \
           .
 
     - name: Build Pi Image
