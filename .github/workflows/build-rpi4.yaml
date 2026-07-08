@@ -26,8 +26,8 @@ jobs:
         include:
         - fedora_flavor: quay.io/fedora/fedora-bootc
           name: lite
-        - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
-          name: kde
+        # - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
+          # name: kde
     permissions:
       contents: read
       packages: write
@@ -57,7 +57,7 @@ jobs:
           -t ${{ env.REGISTRY }}/rpi4/${{ matrix.name }}:latest \
           --build-arg FEDORA_FLAVOR=${{ matrix.fedora_flavor }} \
           --build-arg FEDORA_VERSION=${{ env.FEDORA_VERSION }} \
-          --build-arg FLAVOR=rpi4 \
+          --build-arg MEDIUM=rpi4 \
           --target appliance \
           --network=host \
           .

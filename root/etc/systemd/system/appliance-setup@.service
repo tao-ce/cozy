@@ -1,0 +1,34 @@
+[Unit]
+Description=TAO CE Cozy Appliance Setup (on %I)
+Conflicts=getty@%i.service kmsconvt@%i.service
+After=kmscon.service kmsconvt@%i.service
+After=systemd-sysusers.service systemd-tmpfiles-setup.service
+ConditionPathExists=!/etc/tao-ce/cozy/appliance.json
+OnSuccess=kmsconvt@%i.service
+OnFailure=kmsconvt@%i.service
+
+[Service]
+Type=oneshot
+SELinuxContext=system_u:system_r:init_t:s0
+User=root
+SendSIGHUP=yes
+IgnoreSIGPIPE=no
+ExecStartPre=/usr/bin/bash -c "sleep 2; exec /usr/bin/chvt $(echo %i | cut -c4-)"
+ExecStart=/usr/bin/kmscon \
+  --vt %i \
+  --switchvt \
+  --term xterm-256color \
+  --login -- \
+    /usr/bin/bash -c "/usr/libexec/tao-ce/cozy/appliance-setup /etc/tao-ce/cozy/appliance.json ; kill -s SIGTERM $PPID"
+ExecStartPost=/usr/libexec/tao-ce/cozy/appliance-apply.sh
+
+TTYPath=/dev/%i
+TTYReset=yes
+TTYVTDisallocate=yes
+TTYVHangup=yes
+StandardInput=tty
+StandardOutput=tty
+
+[Install]
+WantedBy=multi-user.target
+DefaultInstance=tty4
