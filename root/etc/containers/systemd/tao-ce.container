@@ -6,16 +6,16 @@ After=redis.container
 After=pgsql.container
 After=pubsub-emulator.container
 After=firestore-emulator.container
+After=appliance-setup.service
 
 [Container]
-
-Image=quay.io/tao-ce/tao-ce:latest
 PublishPort=443:443
 IP=10.247.40.73
 Network=deps.network
 Volume=/var/lib/tao-ce/data:/var/lib/tao-ce:z,U
 Volume=/etc/tao-ce/config/tao.yaml:/etc/tao-ce/config/tao.yaml:z,U
 Volume=/etc/tao-ce/systemd/system/tao-ce.construct.backend.service.d:/etc/systemd/system/tao-ce.construct.backend.service.d:z,U
+Volume=/etc/localtime:/etc/localtime:z,U,ro
 PodmanArgs=--privileged
 
 [Service]

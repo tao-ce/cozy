@@ -14,3 +14,16 @@ cockpit-podman
 cockpit-networkmanager
 cockpit-files
 pcp
+kmscon
+kmscon-freetype
+google-noto-emoji-fonts
+google-noto-sans-mono-fonts
+google-noto-sans-mono-cjk-vf-fonts
+jq
+glibc-langpack-fr
+glibc-langpack-es
+glibc-langpack-pt
+glibc-langpack-ja
+glibc-langpack-en
+glibc-langpack-de
+glibc-langpack-it
