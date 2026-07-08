@@ -2,3 +2,4 @@ uboot-images-armv8
 bcm2711-firmware
 bcm283x-firmware
 bcm283x-overlays
+NetworkManager-wifi

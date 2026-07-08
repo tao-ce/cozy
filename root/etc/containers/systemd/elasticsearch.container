@@ -1,5 +1,7 @@
 [Unit]
 Description=Elasticsearch for TAO Community
+After=appliance-setup.service
+After=network-online.target
 
 [Container]
 Image=docker.elastic.co/elasticsearch/elasticsearch:8.17.4

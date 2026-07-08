@@ -7,6 +7,7 @@ After=pgsql.container
 After=pubsub-emulator.container
 After=firestore-emulator.container
 After=appliance-setup.service
+After=network-online.target
 
 [Container]
 PublishPort=443:443

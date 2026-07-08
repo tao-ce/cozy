@@ -14,13 +14,13 @@ HOTSPOT_NETWORK_NAME=wifi-${HOTSPOT_NETWORK_IF}
 HOTSPOT_NMCONNECTION_PATH=/etc/NetworkManager/system-connections/${HOTSPOT_NETWORK_NAME}.nmconnection
 
 setup_hotspot(){
-    SSID=$(jq -r .hotspot.ssid $COZY_CONFIG_PATH)
-    PASSWORD=$(jq -r .hotspot.password $COZY_CONFIG_PATH)
-    SECURITY=$(jq -r .hotspot.security $COZY_CONFIG_PATH)
-    [ "$SECURITY" = "open" ] && SECURITY=none
-    [ "$SECURITY" = "open" ] && PSK=""
-    [ "$SECURITY" = "wpa2" ] && SECURITY=wpa-psk
-    [ "$SECURITY" = "wpa2" ] && PSK="psk=${PASSWORD}"
+    HOTSPOT_SSID=$(jq -r .hotspot.ssid $COZY_CONFIG_PATH)
+    HOTSPOT_PASSWORD=$(jq -r .hotspot.password $COZY_CONFIG_PATH)
+    HOTSPOT_SECURITY=$(jq -r .hotspot.security $COZY_CONFIG_PATH)
+    [ "$HOTSPOT_SECURITY" = "open" ] && SECURITY=none
+    [ "$HOTSPOT_SECURITY" = "open" ] && PSK=""
+    [ "$HOTSPOT_SECURITY" = "wpa2" ] && SECURITY=wpa-psk
+    [ "$HOTSPOT_SECURITY" = "wpa2" ] && PSK="psk=${HOTSPOT_PASSWORD}"
     cat <<EOF > $HOTSPOT_NMCONNECTION_PATH
 [connection]
 id=${HOTSPOT_NETWORK_NAME}
@@ -30,7 +30,7 @@ autoconnect=yes
 
 [wifi]
 mode=ap
-ssid=${SSID}
+ssid=${HOTSPOT_SSID}
 [wifi-sec]
 pmf=1
 key-mgmt=${SECURITY}
@@ -49,11 +49,12 @@ EOF
     systemctl restart NetworkManager.service
 }
 
-jq -e .features.hotspot $COZY_CONFIG_PATH && setup_hotspot
+echo "Enabling/disabling DDNS"
 jq -e .features.ddns $COZY_CONFIG_PATH \
-  && systemctl enable --now avahi-daemon.service \
-  || systemctl disable --now avahi-daemon.service
+  && systemctl enable avahi-daemon.service \
+  || systemctl disable avahi-daemon.service
 
+echo "Setting FQDN"
 sed -i \
 "s/tao-community-edition.local/$(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)/g" \
   /etc/hosts \
@@ -63,6 +64,7 @@ sed -i \
 
 hostnamectl set-hostname $(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)
 
+echo "Setting up containers"
 mkdir -p /etc/containers/systemd/tao-ce.container.d
 jq \
   --slurpfile manifest $COZY_CONFIG_PATH \
@@ -70,12 +72,22 @@ jq \
   /usr/libexec/tao-ce/cozy/templates/tao-ce.container.override.conf \
   > /etc/containers/systemd/tao-ce.container.d/override.conf
 
-timedatectl set-timezone $(jq -r '.locale.timezoneRegion + "/" + .locale.timezoneCity' $COZY_CONFIG_PATH)
-localectl set-locale $(jq -r '.locale.language' $COZY_CONFIG_PATH)
-
+echo "Reloading systemd"
 systemctl daemon-reload
 
-systemctl restart tao-ce.service --no-block
+echo "Setting timezone"
+timedatectl set-timezone $(jq -r '.locale.timezoneRegion + "/" + .locale.timezoneCity' $COZY_CONFIG_PATH)
+
+echo "Setting locale"
+localectl set-locale $(jq -r '.locale.language' $COZY_CONFIG_PATH)
+
+echo "Setting up hotspot"
+jq -e .features.hotspot $COZY_CONFIG_PATH && setup_hotspot
+
+echo "Starting TAO CE"
+systemctl start tao-ce --no-block
+
+echo "Done"
 
 exit 0
 

@@ -49,7 +49,7 @@ type ApplianceSetup struct {
 	ApplianceFeatures ApplianceFeatures `json:"features,omitempty"`
 	LocaleSetup       LocaleSetup       `json:"locale,omitempty"`
 	TAOCEConfig       TAOCEConfig       `json:"taoCe,omitempty"`
-	WifiHotspotSetup  WiFiHotspotSetup  `json:"wifi,omitempty"`
+	WifiHotspotSetup  WiFiHotspotSetup  `json:"hotspot,omitempty"`
 	Metadata          map[string]string `json:"metadata"`
 	Medium            string            `json:"medium,omitempty"`
 }
