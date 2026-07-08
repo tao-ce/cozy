@@ -1,11 +1,20 @@
 [Unit]
 Description=TAO CE Cozy Appliance Setup (on %I)
-Conflicts=getty@%i.service kmsconvt@%i.service
-After=kmscon.service kmsconvt@%i.service
+DefaultDependencies=no
+
+After=systemd-remount-fs.service
 After=systemd-sysusers.service systemd-tmpfiles-setup.service
+After=systemd-vconsole-setup.service
+After=systemd-mute-console.socket
+
+Wants=first-boot-complete.target
+Before=first-boot-complete.target sysinit.target
+Conflicts=shutdown.target
+Before=shutdown.target
+
 ConditionPathExists=!/etc/tao-ce/cozy/appliance.json
-OnSuccess=kmsconvt@%i.service
-OnFailure=kmsconvt@%i.service
+# OnSuccess=kmsconvt@%i.service
+# OnFailure=kmsconvt@%i.service
 
 [Service]
 Type=oneshot
@@ -13,6 +22,7 @@ SELinuxContext=system_u:system_r:init_t:s0
 User=root
 SendSIGHUP=yes
 IgnoreSIGPIPE=no
+ExecStartPre=/usr/bin/mkdir -p /var/log/tao-ce
 ExecStartPre=/usr/bin/bash -c "sleep 2; exec /usr/bin/chvt $(echo %i | cut -c4-)"
 ExecStart=/usr/bin/kmscon \
   --vt %i \
@@ -20,7 +30,7 @@ ExecStart=/usr/bin/kmscon \
   --term xterm-256color \
   --login -- \
     /usr/bin/bash -c "/usr/libexec/tao-ce/cozy/appliance-setup /etc/tao-ce/cozy/appliance.json ; kill -s SIGTERM $PPID"
-ExecStartPost=/usr/libexec/tao-ce/cozy/appliance-apply.sh
+ExecStartPost=/usr/libexec/tao-ce/cozy/appliance-apply.sh >/var/log/tao-ce/appliance-setup@%i.log 2>&1
 
 TTYPath=/dev/%i
 TTYReset=yes

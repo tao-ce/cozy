@@ -1,5 +1,7 @@
 [Unit]
 Description=Firestore emulator for TAO Community
+After=appliance-setup.service
+After=network-online.target
 
 [Container]
 Image=quay.io/tao-ce/services/firestore-emulator:latest
