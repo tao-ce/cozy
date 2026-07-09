@@ -5,6 +5,7 @@ on:
       - main
       - build/**
     paths:
+      - packages/**
       - config/bootc.vm.toml
       - config/images.common.lst
       - config/images.vm.lst
