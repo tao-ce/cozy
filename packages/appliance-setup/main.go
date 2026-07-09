@@ -134,6 +134,8 @@ type model struct {
 	useDefaultSettings bool
 	timer              timer.Model
 	configPath         string
+	windowWidth        int
+	windowHeight       int
 }
 
 func (m *model) Init() tea.Cmd {
@@ -201,7 +203,7 @@ func NewModel(medium string) *model {
 			WifiHotspotSetup: WiFiHotspotSetup{
 				SSID:     "TAO Community Edition",
 				Security: "wpa2",
-				Password: "taoCe",
+				Password: "ChangeMeNow",
 			},
 		},
 	}
@@ -422,6 +424,10 @@ func (m *model) wifiHotspotSetupScreen() *huh.Form {
 
 func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.windowWidth = msg.Width
+		m.windowHeight = msg.Height
+		return m, nil
 	case timer.TickMsg:
 		var cmd tea.Cmd
 		m.timer, cmd = m.timer.Update(msg)
