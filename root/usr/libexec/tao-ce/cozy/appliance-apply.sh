@@ -1,8 +1,8 @@
-#!/usr/bin/bash
+#!/usr/bin/bash -ex
 #
 
-COZY_CONFIG_PATH=/etc/tao-ce/cozy/appliance.json
-TAO_CE_CONFIG_PATH=/etc/tao-ce/config/tao.yaml
+mkdir -p $(dirname $COZY_LOG_PATH)
+exec >$COZY_LOG_PATH 2>&1
 
 [ -f $COZY_CONFIG_PATH ] || {
     echo "Appliance configuration file not found"
@@ -21,6 +21,7 @@ setup_hotspot(){
     [ "$HOTSPOT_SECURITY" = "open" ] && PSK=""
     [ "$HOTSPOT_SECURITY" = "wpa2" ] && SECURITY=wpa-psk
     [ "$HOTSPOT_SECURITY" = "wpa2" ] && PSK="psk=${HOTSPOT_PASSWORD}"
+    mkdir -p $(dirname $HOTSPOT_NMCONNECTION_PATH)
     cat <<EOF > $HOTSPOT_NMCONNECTION_PATH
 [connection]
 id=${HOTSPOT_NETWORK_NAME}
@@ -44,9 +45,6 @@ method=shared
 method=ignore
 EOF
     chmod 600 $HOTSPOT_NMCONNECTION_PATH
-    nmcli connection reload
-    nmcli connection up ${HOTSPOT_NETWORK_NAME}
-    systemctl restart NetworkManager.service
 }
 
 echo "Enabling/disabling DDNS"
@@ -55,14 +53,26 @@ jq -e .features.ddns $COZY_CONFIG_PATH \
   || systemctl disable avahi-daemon.service
 
 echo "Setting FQDN"
-sed -i \
-"s/tao-community-edition.local/$(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)/g" \
-  /etc/hosts \
-  /etc/firefox/policies/policies.json \
-  /etc/tao-ce/config/tao.yaml \
+#TODO: Set FQDN in /etc/firefox/policies/policies.json
+
+sed -Ei \
+  's@URL=.*@URL=https://'$(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)'@' \
   /etc/skel/Desktop/tao-portal.desktop
 
-hostnamectl set-hostname $(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)
+tao_ce_tmp=$(mktemp)
+
+cat $TAO_CE_CONFIG_PATH \
+  | python3 -c 'import sys, yaml, json; json.dump(yaml.safe_load(sys.stdin), sys.stdout, indent=2)' \
+  | jq --slurpfile manifest $COZY_CONFIG_PATH \
+    '.
+      | .spec.publicDomain = ($manifest[0].taoCe.fqdn)
+      | .spec.defaultLocale = ($manifest[0].locale.language|split(".")|.[0])
+      ' \
+  > $tao_ce_tmp
+
+python3 -c 'import sys, yaml, json; yaml.dump(json.load(sys.stdin), sys.stdout, indent=2)' \
+  < $tao_ce_tmp \
+  > $TAO_CE_CONFIG_PATH
 
 echo "Setting up containers"
 mkdir -p /etc/containers/systemd/tao-ce.container.d
@@ -76,10 +86,16 @@ echo "Reloading systemd"
 systemctl daemon-reload
 
 echo "Setting timezone"
-timedatectl set-timezone $(jq -r '.locale.timezoneRegion + "/" + .locale.timezoneCity' $COZY_CONFIG_PATH)
+ ln -sf \
+   /usr/share/zoneinfo/$(jq -r '.locale.timezoneRegion + "/" + .locale.timezoneCity' $COZY_CONFIG_PATH) \
+   /etc/localtime 
 
 echo "Setting locale"
-localectl set-locale $(jq -r '.locale.language' $COZY_CONFIG_PATH)
+
+jq -r \
+  '"LANG=" + .locale.language' \
+  < $COZY_CONFIG_PATH \
+  >/etc/locale.conf
 
 echo "Setting up hotspot"
 jq -e .features.hotspot $COZY_CONFIG_PATH && setup_hotspot
