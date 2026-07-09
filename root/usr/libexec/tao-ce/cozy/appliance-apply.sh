@@ -26,14 +26,15 @@ setup_hotspot(){
 [connection]
 id=${HOTSPOT_NETWORK_NAME}
 interface-name=${HOTSPOT_NETWORK_IF}
-type=wifi
+type=802-11-wireless
 autoconnect=yes
 
-[wifi]
+[802-11-wireless]
 mode=ap
 ssid=${HOTSPOT_SSID}
-[wifi-sec]
-pmf=1
+
+[802-11-wireless-security]
+pmf=2
 key-mgmt=${SECURITY}
 ${PSK}
 
@@ -55,6 +56,16 @@ jq -e .features.ddns $COZY_CONFIG_PATH \
 echo "Setting FQDN"
 #TODO: Set FQDN in /etc/firefox/policies/policies.json
 
+# Update /etc/hostname
+jq -r .taoCe.fqdn $COZY_CONFIG_PATH >/etc/hostname
+
+# Update /etc/hosts
+sed -Ei \
+  -e '/^0.0.0.0/d' \
+  -e "1i0.0.0.0 $(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)" \
+  /etc/hosts
+
+# Update /etc/skel/Desktop/tao-portal.desktop
 sed -Ei \
   's@URL=.*@URL=https://'$(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)'@' \
   /etc/skel/Desktop/tao-portal.desktop
