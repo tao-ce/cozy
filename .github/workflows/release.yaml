@@ -4,7 +4,6 @@ on:
       release-tag:
         description: The tag of the release
         required: true
-        default: ${{ github.ref_name }}
 
 env:
   PAGER: cat
