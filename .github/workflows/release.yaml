@@ -8,6 +8,7 @@ on:
 env:
   PAGER: cat
   RELEASE_TAG: ${{ inputs.release-tag }}
+  GH_TOKEN: ${{ github.token }}
 
 permissions:
   contents: write
