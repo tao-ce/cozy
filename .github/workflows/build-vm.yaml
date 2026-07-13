@@ -88,12 +88,13 @@ jobs:
 
     - name: Generate OVF
       run: |
+        sudo apt update && sudo apt install -y jsonnet qemu-utils
         VM_MANIFEST=$(jq -nc  \
+          --arg disk_file "${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk" \
           --arg disk_capacity "$(qemu-img info --output json ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk | jq -r '.["virtual-size"]')" \
           --arg disk_uuid "$(uuidgen)" \
           --arg machine_uuid "$(uuidgen)" \
-            '{disk: {file: "${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk", capacity: $disk_capacity, uuid: $disk_uuid }, machine: { uuid: $machine_uuid } }')
-        sudo apt update && sudo apt install -y jsonnet
+            '{disk: {file: $disk_file, capacity: $disk_capacity, uuid: $disk_uuid }, machine: { uuid: $machine_uuid } }')
         jsonnet -S \
           --tla-code args="$VM_MANIFEST" \
           config/vm.ovf.jsonnet > ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf
