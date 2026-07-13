@@ -23,20 +23,26 @@ jobs:
           gh run list \
             -R ${{ github.repository }} \
             -b ${{ env.RELEASE_TAG }} \
-            --json url,status,databaseId,name \
-            -s success > ./workflows-runs.json
+            --json databaseId \
+            -q '.[].databaseId' \
+            -s success > ./workflows-runs-ids.txt
 
       - name: identify artifacts
         id: identify-artifacts
         run: |
-          jq . <workflows-runs.json | jq -r '.[].databaseId' > ./workflows-runs-ids.txt
           cat ./workflows-runs-ids.txt | while read id; do
             gh api /repos/${{ github.repository }}/actions/runs/$id/artifacts -q '.artifacts[].id'
-          done  | tr '\n' ',' | sed s/^/ARTIFACTS_IDS=/ >>"${GITHUB_OUTPUT}"
+          done \
+            | tr '\n' ',' \
+            | sed \
+              -e 's/^/ARTIFACTS_IDS=/' \
+              -e 's/,$//' \
+            | tee -a "${GITHUB_OUTPUT}"
+          
 
 
       - name: Download Artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           artifact-ids: ${{ steps.identify-artifacts.outputs.ARTIFACTS_IDS }}
           skip-decompress: true
