@@ -1,0 +1,1 @@
+jq -csR '.|split("\n")|map(if startswith("L") then split(" ")[2] elif startswith("Z") then split(" ")[1] else  null end)|map(select(. != null))|map(split("/")|{z: .[0], t: .[1:]|join("/")})|map(select(.z|length > 0)|select(.t|length > 0))|group_by(.z)|map({(.[0].z): [.[].t]|sort|unique})|add' </usr/share/zoneinfo/tzdata.zi >./tzdata.json

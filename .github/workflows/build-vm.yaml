@@ -19,6 +19,7 @@ env:
   REGISTRY: ghcr.io/tao-ce/cozy
   FS_TYPE: btrfs
   FEDORA_VERSION: "44"
+  IMAGE_PFX: tao-ce-cozy-vm-
 
 jobs:
   build:
@@ -26,9 +27,9 @@ jobs:
       matrix:
         include:
         - fedora_flavor: quay.io/fedora/fedora-bootc
-          name: lite
+          name: server
         # - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
-          # name: kde
+          # name: desktop
     permissions:
       contents: read
       packages: write
@@ -82,13 +83,46 @@ jobs:
             -vv \
             --use-librepo \
             ${{ env.REGISTRY }}/vm/${{ matrix.name }}:latest
-        sudo mv ./output/${{ matrix.name }}/vmdk/disk.vmdk ./output/vm-image-${{ matrix.name }}.vmdk
+        sudo mv ./output/${{ matrix.name }}/vmdk/disk.vmdk ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk
 
+    - name: Generate OVF
+      run: |
+        DISK_CAPACITY=$(qemu-img info --output json ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk | jq -r '.["virtual-size"]')
+        DISK_UUID=$(uuidgen)
+        MACHINE_UUID=$(uuidgen)
+        VM_MANIFEST=$(jq -nc --arg disk_capacity "$DISK_CAPACITY" --arg disk_uuid "$DISK_UUID" --arg machine_uuid "$MACHINE_UUID" '
+          {
+            "disk": {
+              "file": "${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk",
+              "capacity": $disk_capacity,
+              "uuid": $disk_uuid
+            },
+            "machine": {
+              "uuid": $machine_uuid
+            }
+          }')
+        sudo apt update && sudo apt install -y jsonnet
+        jsonnet -S \
+          --tla-code args="$VM_MANIFEST" \
+          config/vm.ovf.jsonnet > ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf
+
+    - name: Pack OVF
+      working-directory: ./output
+      run: |
+        sha256sum --tag \
+          ./${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf \
+          ./${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk \
+          > ./${{ env.IMAGE_PFX }}${{ matrix.name }}.mf
+
+        tar -cvf ${{ env.IMAGE_PFX }}${{ matrix.name }}.ova \
+          ${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf \
+          ${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk \
+          ${{ env.IMAGE_PFX }}${{ matrix.name }}.mf
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: vm-image-${{ matrix.name }}
-        path: ./output/vm-image-${{ matrix.name }}.vmdk
+        name: ${{ env.IMAGE_PFX }}${{ matrix.name }}
+        path: ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.ova
         archive: false
         if-no-files-found: error

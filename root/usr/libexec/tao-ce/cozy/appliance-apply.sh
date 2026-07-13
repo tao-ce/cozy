@@ -32,6 +32,7 @@ autoconnect=yes
 [802-11-wireless]
 mode=ap
 ssid=${HOTSPOT_SSID}
+band=bg
 
 [802-11-wireless-security]
 pmf=2

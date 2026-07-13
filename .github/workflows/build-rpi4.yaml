@@ -1,4 +1,5 @@
 name: Build Raspberry Pi 4 Image
+
 on:
   push:
     branches:
@@ -19,6 +20,7 @@ env:
   REGISTRY: ghcr.io/tao-ce/cozy
   FS_TYPE: btrfs
   FEDORA_VERSION: "44"
+  IMAGE_PFX: tao-ce-cozy-rpi4-
 
 jobs:
   build:
@@ -26,9 +28,9 @@ jobs:
       matrix:
         include:
         - fedora_flavor: quay.io/fedora/fedora-bootc
-          name: lite
+          name: server 
         # - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
-          # name: kde
+          # name: desktop
     permissions:
       contents: read
       packages: write
@@ -103,12 +105,12 @@ jobs:
         sudo ls -lh ./output/${{ matrix.name }}/image/disk.raw
         sudo xz -0 ./output/${{ matrix.name }}/image/disk.raw
         sudo ls -lh ./output/${{ matrix.name }}/image/disk.raw.xz
-        sudo mv ./output/${{ matrix.name }}/image/disk.raw.xz ./output/rpi4-image-${{ matrix.name }}.raw.xz
+        sudo mv ./output/${{ matrix.name }}/image/disk.raw.xz ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.raw.xz
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: rpi4-image-${{ matrix.name }}
-        path: ./output/rpi4-image-${{ matrix.name }}.raw.xz
+        name: ${{ env.IMAGE_PFX }}${{ matrix.name }}
+        path: ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.raw.xz
         archive: false
         if-no-files-found: error
