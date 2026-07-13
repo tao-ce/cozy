@@ -2,6 +2,8 @@ name: Build Raspberry Pi 4 Image
 
 on:
   push:
+    tags:
+      - '**'
     branches:
       - main
       - build/**
