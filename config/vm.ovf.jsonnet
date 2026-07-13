@@ -1,8 +1,8 @@
 local default_args = {
     disk: {
-        capacity:  error('disk.capacity is required'),
-        file: error('disk.file is required'),
-        uuid: error('disk.uuid is required'),
+        // capacity:  error('disk.capacity is required'),
+        // file: error('disk.file is required'),
+        // uuid: error('disk.uuid is required'),
         format: "http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized",
     },
     virtualId: 'tao-ce-cozy',
@@ -25,7 +25,7 @@ local default_args = {
         memory: 8192,
     },
     machine: {
-        uuid: error('machine.uuid is required'),
+        // uuid: error('machine.uuid is required'),
         name: 'tao-ce-cozy',
         description: "TAO Community Edition - Cozy"
     }
