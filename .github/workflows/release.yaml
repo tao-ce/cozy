@@ -17,7 +17,7 @@ jobs:
         run: |
           gh run list \
             -R ${{ github.repository }} \
-            -b ${{ github.event.release.tag_name }} \
+            -b ${{ github.ref_name }} \
             --json url,status,databaseId,name \
             -s success > ./workflows-runs.json
 
