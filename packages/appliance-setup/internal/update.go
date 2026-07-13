@@ -25,6 +25,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, m.quit()
 		}
 	case tea.KeyPressMsg:
+		cmds = append(cmds, tea.ClearScreen)
 		if m.SetupStep == SetupStepWelcome && m.Timer.Running() {
 			m.Timer.Timeout = time.Duration(0)
 		}
@@ -47,7 +48,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	}
 
 	if screen.Form.State == huh.StateCompleted {
-
 		if m.UseDefaultSettings {
 			return m, m.quit()
 		}
