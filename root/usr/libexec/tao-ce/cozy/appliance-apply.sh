@@ -48,8 +48,8 @@ EOF
     chmod 600 $HOTSPOT_NMCONNECTION_PATH
 }
 
-echo "Enabling/disabling DDNS"
-jq -e .features.ddns $COZY_CONFIG_PATH \
+echo "Enabling/disabling MulticastDNS"
+jq -e .features.mdns $COZY_CONFIG_PATH \
   && systemctl enable avahi-daemon.service \
   || systemctl disable avahi-daemon.service
 
@@ -77,7 +77,7 @@ cat $TAO_CE_CONFIG_PATH \
   | jq --slurpfile manifest $COZY_CONFIG_PATH \
     '.
       | .spec.publicDomain = ($manifest[0].taoCe.fqdn)
-      | .spec.defaultLocale = ($manifest[0].locale.language|split(".")|.[0])
+      | .spec.defaultLocale = ($manifest[0].locale.language|split(".")|.[0]|gsub("[_]";"-"))
       ' \
   > $tao_ce_tmp
 

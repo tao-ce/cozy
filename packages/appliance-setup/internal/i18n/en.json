@@ -1,0 +1,61 @@
+{
+    "langCode": "en_US.UTF-8",
+    "langName": "English",
+
+    "strings":{
+        "_langName": "English",
+
+        "locale.help": "# Locale Setup\n\n* **Language**: The language of the appliance.\n\n* **Timezone Region**: The timezone region of the appliance.\n\n* **Timezone City**: The timezone city of the appliance.",
+        "locale.language": "Language",
+        "locale.timezone.region": "Timezone Region",
+        "locale.timezone.city": "Timezone City",
+
+        "features.help": "# Appliance Features\n\n* **Wifi Hotspot**: When running on compatible hardware, a WiFi hotspot will allow to use the appliance as a WiFi access point.\n\n* **MulticastDNS**: When enabled, the appliance will broadcast its address on local network.",
+        "features.wifihotspot.warning": "Note: WiFi Hotspot is not available on %s medium.\n",
+        "features.wifihotspot": "WiFi Hotspot",
+        "features.multicastdns": "MulticastDNS",
+
+        "features.on": "ON",
+        "features.off": "OFF",
+
+        "taoce.help": "# TAO Community Edition Configuration\n\n* **Domain Name**: The fully qualified domain name of the appliance.\n\n* **Flavor**: The flavor of the appliance.",
+        "taoce.fqdn": "Domain Name",
+        "taoce.flavor": "Flavor",
+        "taoce.flavor.full": "Full",
+        "taoce.flavor.essential": "Essential",
+        "taoce.flavor.lite": "Lite",
+        "taoce.flavor.minimal": "Minimal",
+        "taoce.flavor.full.description": "Full flavor includes all features and services.",
+        "taoce.flavor.essential.description": "Full version without Grader and Proctor services.",
+        "taoce.flavor.lite.description": "Only Portal and Deliver services.",
+        "taoce.flavor.minimal.description": "Only Deliver services.",
+
+        "wifihotspot.help": "# WiFi Hotspot Setup\n\n* **SSID**: WiFi hotspot SSID.\n\n* **Security**: WiFi hotspot security.\n\n* **Password**: WiFi hotspot password.",
+        "wifihotspot.ssid": "SSID",
+        "wifihotspot.security": "Security",
+        "wifihotspot.password": "Password",
+        "wifihotspot.security.open": "Open (no password)",
+
+        "medium.unknown": "unknown",
+        "medium.vm": "VM",
+        "medium.container": "Container",
+        "medium.rpi4": "Raspberry Pi 4",
+        "medium.rpi5": "Raspberry Pi 5",
+
+        "done.help": "# Setup complete\n\n",
+        "done.description": "Configuration will be written to %s",
+        "done.standard_output": "standard output",
+        "done.confirm.affirmative": "Restart",
+        "done.confirm.negative": "Submit",
+        "done.confirm.title": "Do you want to restart configuration?",
+
+        "error.taoce.fqdn.required": "Domain name is required.",
+        "error.taoce.fqdn.invalid": "Domain name must be a valid FQDN.",
+        "error.taoce.fqdn.not_local": "When using MulticastDNS, the domain name must end with \".local\".",
+        "error.wifihotspot.ssid.required": "WiFi hotspot SSID is required.",
+        "error.wifihotspot.security.required": "WiFi hotspot security is required.",
+        "error.wifihotspot.password.required": "WiFi hotspot password is required when security is enabled.",
+        "error.wifihotspot.ssid.invalid": "WiFi hotspot SSID must be between 1 and 32 ASCII characters.",
+        "error.wifihotspot.password.invalid": "WiFi hotspot password must be between 1 and 32 ASCII characters."
+    }
+}

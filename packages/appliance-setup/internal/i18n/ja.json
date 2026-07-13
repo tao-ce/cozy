@@ -1,0 +1,51 @@
+{
+    "langCode": "ja_JP.UTF-8",
+    "langName": "Japanese",
+    "strings": {
+        "_langName": "日本語",
+        "locale.help": "# ロケール設定\n\n* **言語**: アプライアンスの言語。\n\n* **タイムゾーン地域**: アプライアンスのタイムゾーン地域。\n\n* **タイムゾーン都市**: アプライアンスのタイムゾーン都市。",
+        "locale.language": "言語",
+        "locale.timezone.region": "タイムゾーン地域",
+        "locale.timezone.city": "タイムゾーン都市",
+
+        "features.help": "# 機能設定\n\n* **WiFi Hotspot**: 互換性のあるハードウェアで実行する場合、WiFi ホットスポットを使用して、アプライアンスを WiFi アクセス ポイントとして使用できます。\n\n* **MulticastDNS**: 有効にすると、アプライアンスはローカル ネットワークにそのアドレスを広散します。",
+        "features.wifihotspot.warning": "注: WiFi ホットスポットは %s サポートでは使用できません。\n",
+        "features.wifihotspot": "WiFi Hotspot",
+        "features.multicastdns": "MulticastDNS",
+        "features.on": "オン",
+        "features.off": "オフ",
+
+        "taoce.help": "# TAO Community Edition 設定\n\n* **ドメイン名**: アプライアンスの完全修飾ドメイン名。\n\n* **フレーバー**: デプロイする TAO CE のフレーバー。",
+        "taoce.fqdn": "ドメイン名",
+        "taoce.flavor": "フレーバー",
+        "taoce.flavor.full": "Full",
+        "taoce.flavor.essential": "Essential",
+        "taoce.flavor.lite": "Lite",
+        "taoce.flavor.minimal": "Minimal",
+
+        "wifihotspot.help": "# WiFi ホットスポット設定\n\n* **SSID**: WiFi ホットスポットの SSID。\n\n* **セキュリティ**: WiFi ホットスポットのセキュリティ。\n\n* **パスワード**: WiFi ホットスポットのパスワード。",
+        "wifihotspot.ssid": "SSID",
+        "wifihotspot.security": "セキュリティ",
+        "wifihotspot.password": "パスワード",
+        "wifihotspot.security.open": "オープン (パスワードなし)",
+
+        "medium.unknown": "不明",
+        "medium.vm": "VM",
+        "medium.container": "コンテナ",
+        "medium.rpi4": "Raspberry Pi 4",
+        "medium.rpi5": "Raspberry Pi 5",
+
+        "done.help": "# 設定完了\n\n",
+        "done.description": "設定は %s に書き込まれます。\n",
+        "done.standard_output": "標準出力",
+        "done.confirm.affirmative": "再起動",
+        "done.confirm.negative": "送信",
+        "done.confirm.title": "設定を再起動しますか？",
+
+        "error.taoce.fqdn.required": "ドメイン名は必須です。",
+        "error.taoce.fqdn.not_local": "MulticastDNS を使用する場合、ドメイン名は \".local\" で終わる必要があります。",
+        "error.wifihotspot.ssid.required": "WiFi ホットスポットの SSID は必須です。",
+        "error.wifihotspot.security.required": "WiFi ホットスポットのセキュリティは必須です。",
+        "error.wifihotspot.password.required": "WiFi ホットスポットのセキュリティが有効な場合、パスワードは必須です。"
+    }
+}

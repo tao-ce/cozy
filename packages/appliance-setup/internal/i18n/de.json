@@ -1,0 +1,50 @@
+{
+    "langCode": "de_DE.UTF-8",
+    "langName": "German",
+    "strings": {
+        "_langName": "Deutsch",
+        "locale.help": "# Lokalisierung\n\n* **Sprache**: Die Sprache der Appliance.\n\n* **Zeitzone**: Die Zeitzone der Appliance.\n\n* **Stadt**: Die Stadt der Zeitzone.",
+        "locale.language": "Sprache",
+        "locale.timezone.region": "Zeitzone",
+        "locale.timezone.city": "Stadt",
+        "features.help": "# Funktionen\n\n* **WiFi Hotspot**: Wenn auf kompatibler Hardware ausgeführt, ermöglicht ein WiFi Hotspot die Verwendung der Appliance als WiFi-Zugangspunkt.\n\n* **MulticastDNS**: Wenn aktiviert, wird die Adresse der Appliance im lokalen Netzwerk verbreitet.",
+        "features.wifihotspot.warning": "Hinweis: WiFi Hotspot ist auf dem Support %s nicht verfügbar.\n",
+        "features.wifihotspot": "WiFi Hotspot",
+        "features.multicastdns": "MulticastDNS",
+        "features.on": "EIN",
+        "features.off": "AUS",
+
+        "taoce.help": "# TAO Community Edition Konfiguration\n\n* **Domain Name**: Die vollqualifizierte Domain Name der Appliance.\n\n* **Flavor**: Der Flavor der Appliance.",
+        "taoce.fqdn": "Domain Name",
+        "taoce.flavor": "Flavor",
+        "taoce.flavor.full": "Full",
+        "taoce.flavor.essential": "Essential",
+        "taoce.flavor.lite": "Lite",
+        "taoce.flavor.minimal": "Minimal",
+
+        "wifihotspot.help": "# WiFi Hotspot Konfiguration\n\n* **SSID**: Die SSID des WiFi Hotspots.\n\n* **Sicherheit**: Die Sicherheit des WiFi Hotspots.\n\n* **Passwort**: Das Passwort des WiFi Hotspots.",
+        "wifihotspot.ssid": "SSID",
+        "wifihotspot.security": "Sicherheit",
+        "wifihotspot.password": "Passwort",
+        "wifihotspot.security.open": "Offen (kein Passwort)",
+
+        "medium.unknown": "unbekannt",
+        "medium.vm": "VM",
+        "medium.container": "Container",
+        "medium.rpi4": "Raspberry Pi 4",
+        "medium.rpi5": "Raspberry Pi 5",
+
+        "done.help": "# Konfiguration abgeschlossen\n\n",
+        "done.description": "Die Konfiguration wird in %s geschrieben.\n",
+        "done.standard_output": "standard output",
+        "done.confirm.affirmative": "Neu starten",
+        "done.confirm.negative": "Absenden",
+        "done.confirm.title": "Möchten Sie die Konfiguration neu starten?",
+
+        "error.taoce.fqdn.required": "Der Domain Name ist erforderlich.",
+        "error.taoce.fqdn.not_local": "Wenn MulticastDNS verwendet wird, muss der Domain Name mit \".local\" enden.",
+        "error.wifihotspot.ssid.required": "Die SSID des WiFi Hotspots ist erforderlich.",
+        "error.wifihotspot.security.required": "Die Sicherheit des WiFi Hotspots ist erforderlich.",
+        "error.wifihotspot.password.required": "Das Passwort des WiFi Hotspots ist erforderlich, wenn die Sicherheit aktiviert ist."
+    }
+}

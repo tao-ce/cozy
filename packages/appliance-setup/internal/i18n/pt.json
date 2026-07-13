@@ -1,0 +1,51 @@
+{
+    "langCode": "pt_PT.UTF-8",
+    "langName": "Portuguese",
+    "strings": {
+        "_langName": "Português",
+        "locale.help": "# Configuração de Localidade\n\n* **Idioma**: O idioma da instalação.\n\n* **Região do fuso horário**: A região do fuso horário da instalação.\n\n* **Cidade do fuso horário**: A cidade do fuso horário da instalação.",
+        "locale.language": "Idioma",
+        "locale.timezone.region": "Região do fuso horário",
+        "locale.timezone.city": "Cidade do fuso horário",
+
+        "features.help": "# Funcionalidades da Instalação\n\n* **Hotspot WiFi**: Quando instalado em hardware compatível, um hotspot WiFi permite usar a instalação como ponto de acesso WiFi.\n\n* **MulticastDNS**: Quando ativado, a instalação difunde sua endereço na rede local.",
+        "features.wifihotspot.warning": "Nota: O hotspot WiFi não está disponível no suporte %s.\n",
+        "features.wifihotspot": "Hotspot WiFi",
+        "features.multicastdns": "MulticastDNS",
+        "features.on": "ATIVO",
+        "features.off": "INATIVO",
+
+        "taoce.help": "# Configuração de TAO Community Edition\n\n* **Nome de domínio**: O nome de domínio da instalação.\n\n* **Variante**: A variante de TAO CE a ser instalada.",
+        "taoce.fqdn": "Nome de domínio",
+        "taoce.flavor": "Variante",
+        "taoce.flavor.full": "Full",
+        "taoce.flavor.essential": "Essential",
+        "taoce.flavor.lite": "Lite",
+        "taoce.flavor.minimal": "Minimal",
+
+        "wifihotspot.help": "# Configuração de Hotspot WiFi\n\n* **SSID**: O SSID do hotspot WiFi.\n\n* **Segurança**: A segurança do hotspot WiFi.\n\n* **Senha**: A senha do hotspot WiFi.",
+        "wifihotspot.ssid": "SSID",
+        "wifihotspot.security": "Segurança",
+        "wifihotspot.password": "Senha",
+        "wifihotspot.security.open": "Aberta (sem senha)",
+
+        "medium.unknown": "desconhecido",
+        "medium.vm": "VM",
+        "medium.container": "Contêiner",
+        "medium.rpi4": "Raspberry Pi 4",
+        "medium.rpi5": "Raspberry Pi 5",
+
+        "done.help": "# Configuração concluída\n\n",
+        "done.description": "A configuração será escrita em %s.\n",
+        "done.standard_output": "a saída padrão",
+        "done.confirm.affirmative": "Reiniciar",
+        "done.confirm.negative": "Enviar",
+        "done.confirm.title": "Deseja reiniciar a configuração?",
+
+        "error.taoce.fqdn.required": "O nome de domínio é obrigatório.",
+        "error.taoce.fqdn.not_local": "Quando usando MulticastDNS, o nome de domínio deve terminar com \".local\".",
+        "error.wifihotspot.ssid.required": "O SSID do hotspot WiFi é obrigatório.",
+        "error.wifihotspot.security.required": "A segurança do hotspot WiFi é obrigatória.",
+        "error.wifihotspot.password.required": "A senha do hotspot WiFi é obrigatória quando a segurança está ativada."
+    }
+}
