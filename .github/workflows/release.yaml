@@ -24,7 +24,7 @@ jobs:
       - name: identify workflows runs
         id: identify-workflows-runs
         run: |
-          cat <<EOF >${GITHUB_OUTPUT}
+          tee -a "${GITHUB_OUTPUT}" <<EOF
           ::set-output name=workflows-runs-ids::$(gh run list \
             -R ${{ github.repository }} \
             -b ${{ env.RELEASE_TAG }} \
@@ -36,7 +36,7 @@ jobs:
 
   identify-artifacts:
     runs-on: ubuntu-24.04
-    needs: identify-workflows-runs
+    needs: [ identify-workflows-runs ]
     strategy:
       matrix:
         runId: ${{ fromJson(needs.identify-workflows-runs.outputs.workflows-runs-ids) }}
