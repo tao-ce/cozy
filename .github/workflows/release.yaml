@@ -13,38 +13,47 @@ env:
 permissions:
   contents: write
   artifact-metadata: write
+  actions: read
 
 jobs:
-  release:
+  identify-workflows-runs:
     runs-on: ubuntu-24.04
+    outputs:
+      workflows-runs-ids: ${{ steps.identify-workflows-runs.outputs.workflows-runs-ids }}
     steps:
       - name: identify workflows runs
+        id: identify-workflows-runs
         run: |
-          gh run list \
+          cat <<EOF >${GITHUB_OUTPUT}
+          ::set-output name=workflows-runs-ids::$(gh run list \
             -R ${{ github.repository }} \
             -b ${{ env.RELEASE_TAG }} \
             --json databaseId \
-            -q '.[].databaseId' \
-            -s success > ./workflows-runs-ids.txt
+            --jq '[.[].databaseId]' \
+            -s success | jq -c . )
+          EOF
 
+
+  identify-artifacts:
+    runs-on: ubuntu-24.04
+    needs: identify-workflows-runs
+    strategy:
+      matrix:
+        runId: ${{ fromJson(needs.identify-workflows-runs.outputs.workflows-runs-ids) }}
+    steps:
       - name: identify artifacts
         id: identify-artifacts
         run: |
-          cat ./workflows-runs-ids.txt | while read id; do
-            gh api /repos/${{ github.repository }}/actions/runs/$id/artifacts -q '.artifacts[].id'
-          done \
-            | tr '\n' ',' \
+          gh api /repos/${{ github.repository }}/actions/runs/${{ matrix.runId }}/artifacts -q '[.artifacts[].id]|join(",")' \
             | sed \
               -e 's/^/ARTIFACTS_IDS=/' \
-              -e 's/,$//' \
             | tee -a "${GITHUB_OUTPUT}"
           
-
-
       - name: Download Artifact
         uses: actions/download-artifact@v8
         with:
           artifact-ids: ${{ steps.identify-artifacts.outputs.ARTIFACTS_IDS }}
+          run-id: ${{ matrix.runId }}
           skip-decompress: true
           merge-multiple: true
           path: ./artifacts
