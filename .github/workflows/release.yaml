@@ -16,6 +16,14 @@ permissions:
   actions: read
 
 jobs:
+  create-release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Create release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+      
   identify-workflows-runs:
     runs-on: ubuntu-24.04
     outputs:
@@ -36,7 +44,7 @@ jobs:
 
   identify-artifacts:
     runs-on: ubuntu-24.04
-    needs: [ identify-workflows-runs ]
+    needs: [ identify-workflows-runs, create-release ]
     strategy:
       matrix:
         runId: ${{ fromJson(needs.identify-workflows-runs.outputs.workflows-runs-ids) }}
@@ -64,5 +72,6 @@ jobs:
       - name: Upload to release
         uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ env.RELEASE_TAG }}
           files: ./artifacts/*
 
