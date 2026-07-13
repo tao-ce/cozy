@@ -1,6 +1,8 @@
 name: Build VM Image
 on:
   push:
+    tags:
+      - '**'
     branches:
       - main
       - build/**
