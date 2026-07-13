@@ -57,6 +57,9 @@ jobs:
           skip-decompress: true
           merge-multiple: true
           path: ./artifacts
+          github-token: ${{ env.GH_TOKEN }}
+          pattern: '*'
+
 
       - name: Upload to release
         uses: softprops/action-gh-release@v3
