@@ -1,0 +1,20 @@
+{
+    "locale": {
+        "language": "en_US.UTF-8",
+        "timezoneRegion": "Etc",
+        "timezoneCity": "UTC"
+    },
+    "features": {
+        "mdns": true,
+        "hotspot": true
+    },
+    "taoCe": {
+        "fqdn": "tao-community-edition.local",
+        "flavor": "full"
+    },
+    "hotspot": {
+        "ssid": "TAO Community Edition",
+        "security": "wpa2",
+        "password": "ChangeMeNow"
+    }
+}
