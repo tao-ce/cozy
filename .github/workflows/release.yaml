@@ -17,9 +17,9 @@ jobs:
         run: |
           gh run list \
             -R ${{ github.repository }} \
-            -c ${{ env.GITHUB_SHA }} \
+            -c $GITHUB_SHA \
             --json url,status,databaseId,name \
-            -s completed > ./workflows-runs.json
+            -s success > ./workflows-runs.json
 
       - name: identify artifacts
         id: identify-artifacts
