@@ -28,7 +28,7 @@ jobs:
       matrix:
         include:
         - fedora_flavor: quay.io/fedora/fedora-bootc
-          name: server 
+          name: server
         # - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
           # name: desktop
     permissions:
