@@ -4,7 +4,6 @@ on:
     tags:
       - '**'
     branches:
-      - main
       - build/**
     paths:
       - packages/**
@@ -89,26 +88,17 @@ jobs:
 
     - name: Generate OVF
       run: |
-        DISK_CAPACITY=$(qemu-img info --output json ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk | jq -r '.["virtual-size"]')
-        DISK_UUID=$(uuidgen)
-        MACHINE_UUID=$(uuidgen)
-        VM_MANIFEST=$(jq -nc --arg disk_capacity "$DISK_CAPACITY" --arg disk_uuid "$DISK_UUID" --arg machine_uuid "$MACHINE_UUID" '
-          {
-            "disk": {
-              "file": "${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk",
-              "capacity": $disk_capacity,
-              "uuid": $disk_uuid
-            },
-            "machine": {
-              "uuid": $machine_uuid
-            }
-          }')
+        VM_MANIFEST=$(jq -nc  \
+          --arg disk_capacity "$(qemu-img info --output json ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk | jq -r '.["virtual-size"]')" \
+          --arg disk_uuid "$(uuidgen)" \
+          --arg machine_uuid "$(uuidgen)" \
+            '{disk: {file: "${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk", capacity: $disk_capacity, uuid: $disk_uuid }, machine: { uuid: $machine_uuid } }')
         sudo apt update && sudo apt install -y jsonnet
         jsonnet -S \
           --tla-code args="$VM_MANIFEST" \
           config/vm.ovf.jsonnet > ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf
 
-    - name: Pack OVF
+    - name: Pack OVA
       working-directory: ./output
       run: |
         sha256sum --tag \
