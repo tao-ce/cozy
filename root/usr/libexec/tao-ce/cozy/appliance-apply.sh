@@ -49,11 +49,6 @@ EOF
     chmod 600 $HOTSPOT_NMCONNECTION_PATH
 }
 
-echo "Enabling/disabling MulticastDNS"
-jq -e .features.mdns $COZY_CONFIG_PATH \
-  && systemctl enable avahi-daemon.service \
-  || systemctl disable avahi-daemon.service
-
 echo "Setting FQDN"
 #TODO: Set FQDN in /etc/firefox/policies/policies.json
 
@@ -65,6 +60,10 @@ sed -Ei \
   -e '/^0.0.0.0/d' \
   -e "1i0.0.0.0 $(jq -r .taoCe.fqdn $COZY_CONFIG_PATH)" \
   /etc/hosts
+sed -Ei \
+  -e '/^host-name=/d' \
+  -e "/\[server\]/ahost-name=$(jq -r '.taoCe.fqdn|split(".")|.[0]' $COZY_CONFIG_PATH)" \
+  /etc/avahi/avahi-daemon.conf
 
 # Update /etc/skel/Desktop/tao-portal.desktop
 sed -Ei \
@@ -114,6 +113,11 @@ jq -e .features.hotspot $COZY_CONFIG_PATH && setup_hotspot
 
 echo "Starting TAO CE"
 systemctl start tao-ce --no-block
+
+echo "Enabling/disabling MulticastDNS"
+jq -e .features.mdns $COZY_CONFIG_PATH \
+  && { systemctl enable avahi-daemon.service && systemctl restart avahi-daemon.service --no-block ;} \
+  || systemctl disable avahi-daemon.service
 
 echo "Done"
 

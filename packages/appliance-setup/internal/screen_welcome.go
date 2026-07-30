@@ -15,6 +15,9 @@ func (m *Model) WelcomeScreen() *Screen {
 
 Follow this guide to configure your appliance.
 
+- Wizard version  **` + ApplianceConfigVersion + `**
+- Medium          **` + string(m.Setup.Medium) + `**
+
 `,
 		Form: huh.NewForm(
 			huh.NewGroup(

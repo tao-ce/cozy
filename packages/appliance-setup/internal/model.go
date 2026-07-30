@@ -11,6 +11,7 @@ import (
 
 	"charm.land/bubbles/v2/timer"
 	tea "charm.land/bubbletea/v2"
+	"charm.land/huh/v2"
 	"github.com/tao-ce/cozy/root/usr/libexec/tao-ce/cozy/appliance-setup/internal/i18n"
 )
 
@@ -20,6 +21,7 @@ type ModelPredicate int
 type TAOCEConfig struct {
 	FQDN   string `json:"fqdn,omitempty"`
 	Flavor string `json:"flavor,omitempty"`
+	Image  string `json:"image,omitempty"`
 }
 
 type ApplianceFeatures struct {
@@ -51,6 +53,7 @@ type Model struct {
 	Setup              ApplianceSetup
 	SetupStep          SetupStep
 	screens            map[SetupStep]*Screen
+	imageInput         *huh.Input
 	UseDefaultSettings bool
 	Restart            bool
 	WelcomeTimeout     time.Duration
@@ -76,6 +79,11 @@ func (m *Model) Init() tea.Cmd {
 	m.WindowWidth = 0
 	m.WindowHeight = 0
 	m.Setup.ApplianceFeatures.StartWiFiHotspot = m.Is(IsWiFiHotspotAvailable)
+	m.Setup.TAOCEConfig.Flavor = "full"
+	if m.Is(IsRaspberryPi) {
+		m.Setup.TAOCEConfig.Flavor = "essential"
+	}
+	m.Setup.TAOCEConfig.Image = m.DefaultImage()
 
 	m.screens = make(map[SetupStep]*Screen)
 	return m.Timer.Init()
@@ -103,6 +111,10 @@ func (m *Model) GetScreen() *Screen {
 		m.screens[m.SetupStep] = screen
 	}
 	return m.screens[m.SetupStep]
+}
+
+func (m *Model) DefaultImage() string {
+	return fmt.Sprintf(DefaultImageFormat, m.Setup.TAOCEConfig.Flavor)
 }
 
 func (m *Model) Export() {

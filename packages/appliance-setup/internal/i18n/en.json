@@ -25,10 +25,13 @@
         "taoce.flavor.essential": "Essential",
         "taoce.flavor.lite": "Lite",
         "taoce.flavor.minimal": "Minimal",
+        "taoce.flavor.custom": "Custom…",
         "taoce.flavor.full.description": "Full flavor includes all features and services.",
         "taoce.flavor.essential.description": "Full version without Grader and Proctor services.",
         "taoce.flavor.lite.description": "Only Portal and Deliver services.",
         "taoce.flavor.minimal.description": "Only Deliver services.",
+        "taoce.flavor.custom.description": "Specify custom image below.",
+        "taoce.image": "TAO CE Image",
 
         "wifihotspot.help": "# WiFi Hotspot Setup\n\n* **SSID**: WiFi hotspot SSID.\n\n* **Security**: WiFi hotspot security.\n\n* **Password**: WiFi hotspot password.",
         "wifihotspot.ssid": "SSID",

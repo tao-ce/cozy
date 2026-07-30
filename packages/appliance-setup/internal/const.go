@@ -3,12 +3,13 @@ package internal
 import "time"
 
 const (
-	ApplianceConfigVersion = "1.1.0"
+	ApplianceConfigVersion = "1.2.0"
 	ApplianceConfigSource  = "appliance-setup"
 	DefaultWelcomeTimeout  = 30 * time.Second
 	DefaultConfigPath      = "/etc/tao-ce/cozy/appliance-setup.json"
 	DefaultMedium          = MediumUnknown
 	MediumPath             = "/etc/tao-ce/cozy/medium"
+	DefaultImageFormat     = "quay.io/tao-ce/tao-ce:%s"
 )
 const (
 	IsVM ModelPredicate = iota

@@ -7,6 +7,13 @@ import (
 )
 
 func (m *Model) TAOCEConfigScreen() *Screen {
+	imageInput := huh.NewInput().
+		Title(m.I8nGet("taoce.image")).
+		Value(&m.Setup.TAOCEConfig.Image).
+		WithWidth(40)
+
+	m.imageInput = imageInput.(*huh.Input)
+
 	return &Screen{
 		Help: "taoce.help",
 		Form: huh.NewForm(
@@ -15,7 +22,7 @@ func (m *Model) TAOCEConfigScreen() *Screen {
 					Title(m.I8nGet("taoce.fqdn")).
 					CharLimit(80).
 					Value(&m.Setup.TAOCEConfig.FQDN).Validate(m.Validate("taoce.fqdn")).
-					WithWidth(32),
+					WithWidth(40),
 				huh.NewSelect[string]().
 					Title(m.I8nGet("taoce.flavor")).
 					Value(&m.Setup.TAOCEConfig.Flavor).
@@ -24,11 +31,13 @@ func (m *Model) TAOCEConfigScreen() *Screen {
 						huh.NewOption(m.I8nGet("taoce.flavor.essential"), "essential"),
 						huh.NewOption(m.I8nGet("taoce.flavor.lite"), "lite"),
 						huh.NewOption(m.I8nGet("taoce.flavor.minimal"), "minimal"),
+						huh.NewOption(m.I8nGet("taoce.flavor.custom"), "custom"),
 					).
-					WithWidth(32),
+					WithWidth(40),
 				huh.NewNote().DescriptionFunc(func() string {
 					return m.I8nGet(fmt.Sprintf("taoce.flavor.%s.description", m.Setup.TAOCEConfig.Flavor))
 				}, &m.Setup.TAOCEConfig.Flavor),
+				imageInput,
 			),
 		),
 	}

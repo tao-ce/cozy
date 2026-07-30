@@ -24,6 +24,13 @@
         "taoce.flavor.essential": "Essential",
         "taoce.flavor.lite": "Lite",
         "taoce.flavor.minimal": "Minimal",
+        "taoce.flavor.custom": "Personnalisée…",
+        "taoce.flavor.full.description": "Version complète incluant toutes les fonctionnalités.",
+        "taoce.flavor.essential.description": "Version essentielle sans Grader et Proctor.",
+        "taoce.flavor.lite.description": "Version Lite incluant Portal et Deliver.",
+        "taoce.flavor.minimal.description": "Version Minimal incluant Deliver.",
+        "taoce.flavor.custom.description": "Spécifiez une image personnalisée ci-dessous.",
+        "taoce.image": "Image TAO CE",
 
         "wifihotspot.help": "# Point d'accès WiFi\n\n* **Nom**: Le nom du point d'accès WiFi.\n\n* **Sécurité**: La sécurité du point d'accès WiFi.\n\n* **Mot de passe**: Le mot de passe du point d'accès WiFi.",
         "wifihotspot.ssid": "Nom",

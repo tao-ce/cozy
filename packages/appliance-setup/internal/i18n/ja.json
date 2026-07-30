@@ -22,6 +22,13 @@
         "taoce.flavor.essential": "Essential",
         "taoce.flavor.lite": "Lite",
         "taoce.flavor.minimal": "Minimal",
+        "taoce.flavor.custom": "カスタム…",
+        "taoce.flavor.full.description": "全機能を含むフルバージョン。",
+        "taoce.flavor.essential.description": "Grader と Proctor サービスを含まないフルバージョン。",
+        "taoce.flavor.lite.description": "Portal と Deliver サービスを含む Lite バージョン。",
+        "taoce.flavor.minimal.description": "Deliver サービスを含む Minimal バージョン。",
+        "taoce.flavor.custom.description": "カスタムイメージを指定してください。",
+        "taoce.image": "TAO CE イメージ",
 
         "wifihotspot.help": "# WiFi ホットスポット設定\n\n* **SSID**: WiFi ホットスポットの SSID。\n\n* **セキュリティ**: WiFi ホットスポットのセキュリティ。\n\n* **パスワード**: WiFi ホットスポットのパスワード。",
         "wifihotspot.ssid": "SSID",

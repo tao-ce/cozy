@@ -38,6 +38,12 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	if m.Setup.TAOCEConfig.Flavor != "custom" && m.imageInput != nil {
+		m.Setup.TAOCEConfig.Image = m.DefaultImage()
+		m.imageInput.Value(&m.Setup.TAOCEConfig.Image)
+		cmds = append(cmds, m.imageInput.Blur())
+	}
+
 	screen := m.GetScreen()
 	if screen != nil {
 		form, cmd := screen.Form.Update(msg)
