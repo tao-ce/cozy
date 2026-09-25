@@ -5,6 +5,10 @@ ARG MEDIUM=vm
 ARG OS_VARIANT="TAO Community Edition - Cozy"
 ARG OS_VARIANT_ID="com.taotesting.cozy"
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7370933 (feat: taosetup dashboard WIP)
 FROM golang:1-alpine AS taosetup-builder
 ARG TARGETPLATFORM
 ARG TARGETOS
@@ -67,11 +71,11 @@ RUN mkdir -p /usr/share/cockpit/tao-ce/ \
         --strip-components=2 \
         cockpit-tao-ce/dist
 
-COPY root/ /
-
 COPY --from=taosetup-builder \
     /app/taosetup \
     /usr/libexec/tao-ce/cozy/taosetup
+
+COPY root/ /
 
 RUN \
     mkdir -p /etc/tao-ce/cozy \
