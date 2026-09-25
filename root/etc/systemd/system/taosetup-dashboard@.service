@@ -1,0 +1,31 @@
+[Unit]
+Description=TAO CE Cozy Appliance Dashboard (on %I)
+DefaultDependencies=no
+
+After=taosetup-install.service
+
+ConditionPathExists=/etc/tao-ce/cozy/appliance.json
+
+[Service]
+Type=oneshot
+
+Environment=TTY=%i
+Environment=COZY_CONFIG_PATH=/etc/tao-ce/cozy/appliance.json
+Environment=TAO_CE_CONFIG_PATH=/etc/tao-ce/config/tao.yaml
+
+User=root
+SendSIGHUP=yes
+IgnoreSIGPIPE=no
+ExecStart=-/usr/libexec/tao-ce/cozy/kms-wrapper.sh \
+    /usr/libexec/tao-ce/cozy/taosetup dashboard -config-path $COZY_CONFIG_PATH
+
+TTYPath=/dev/%i
+TTYReset=yes
+TTYVTDisallocate=yes
+TTYVHangup=yes
+StandardInput=tty
+StandardOutput=tty
+
+[Install]
+WantedBy=multi-user.target
+DefaultInstance=tty4

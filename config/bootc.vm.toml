@@ -4,7 +4,10 @@ password = "tao"
 description = "TAO Community Edition"
 groups = ["wheel" ]
 
-[[customizations.filesystem]]
-mountpoint = "/"
+[[customizations.disk.partitions]]
+type = "btrfs"
 minsize = "40 GiB"
 
+[[customizations.disk.partitions.subvolumes]]
+mountpoint = "/"
+name = "root"

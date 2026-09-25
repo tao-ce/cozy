@@ -1,10 +1,8 @@
-package internal
+package install
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -12,45 +10,15 @@ import (
 	"charm.land/bubbles/v2/timer"
 	tea "charm.land/bubbletea/v2"
 	"charm.land/huh/v2"
-	"github.com/tao-ce/cozy/root/usr/libexec/tao-ce/cozy/appliance-setup/internal/i18n"
+	"github.com/tao-ce/cozy/taosetup/internal"
+	"github.com/tao-ce/cozy/taosetup/internal/i18n"
 )
 
 type SetupStep int
 type ModelPredicate int
 
-type TAOCEConfig struct {
-	FQDN   string `json:"fqdn,omitempty"`
-	Flavor string `json:"flavor,omitempty"`
-	Image  string `json:"image,omitempty"`
-}
-
-type ApplianceFeatures struct {
-	StartMulticastDNS bool `json:"mdns"`
-	StartWiFiHotspot  bool `json:"hotspot"`
-}
-
-type WiFiHotspotSetup struct {
-	SSID     string `json:"ssid,omitempty"`
-	Security string `json:"security,omitempty"`
-	Password string `json:"password,omitempty"`
-}
-
-type LocaleSetup struct {
-	Language       string `json:"language,omitempty"`
-	TimezoneRegion string `json:"timezoneRegion,omitempty"`
-	TimezoneCity   string `json:"timezoneCity,omitempty"`
-}
-
-type ApplianceSetup struct {
-	ApplianceFeatures ApplianceFeatures `json:"features,omitempty"`
-	LocaleSetup       LocaleSetup       `json:"locale,omitempty"`
-	TAOCEConfig       TAOCEConfig       `json:"taoCe,omitempty"`
-	WifiHotspotSetup  WiFiHotspotSetup  `json:"hotspot,omitempty"`
-	Metadata          map[string]string `json:"metadata"`
-	Medium            string            `json:"medium,omitempty"`
-}
 type Model struct {
-	Setup              ApplianceSetup
+	Setup              *internal.ApplianceSetup
 	SetupStep          SetupStep
 	screens            map[SetupStep]*Screen
 	imageInput         *huh.Input
@@ -70,7 +38,6 @@ func (m *Model) I8nGet(key string) string {
 func (m *Model) Init() tea.Cmd {
 	m.Setup.Medium = GetMedium()
 	m.WelcomeTimeout = GetWelcomeTimeout()
-	m.ConfigPath = GetConfigPath()
 
 	m.SetupStep = SetupStepWelcome
 	m.UseDefaultSettings = false
@@ -115,32 +82,6 @@ func (m *Model) GetScreen() *Screen {
 
 func (m *Model) DefaultImage() string {
 	return fmt.Sprintf(DefaultImageFormat, m.Setup.TAOCEConfig.Flavor)
-}
-
-func (m *Model) Export() {
-	m.Setup.Metadata = map[string]string{
-		"timestamp": time.Now().Format(time.RFC3339),
-		"version":   ApplianceConfigVersion,
-		"source":    ApplianceConfigSource,
-	}
-
-	if !m.Setup.ApplianceFeatures.StartWiFiHotspot {
-		m.Setup.WifiHotspotSetup = WiFiHotspotSetup{}
-	}
-	if m.Setup.WifiHotspotSetup.Security == "open" {
-		m.Setup.WifiHotspotSetup.Password = ""
-	}
-
-	jsonData, err := json.Marshal(&m.Setup)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error marshalling setup:", err)
-		return
-	}
-	if m.ConfigPath != "" {
-		os.WriteFile(m.ConfigPath, jsonData, 0644)
-	} else {
-		fmt.Fprintln(os.Stdout, string(jsonData))
-	}
 }
 
 func (m *Model) Validate(key string) func(string) error {

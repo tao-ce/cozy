@@ -1,4 +1,4 @@
-package internal
+package install
 
 import (
 	"fmt"
@@ -31,11 +31,4 @@ func GetWelcomeTimeout() time.Duration {
 		}
 	}
 	return DefaultWelcomeTimeout
-}
-
-func GetConfigPath() string {
-	if len(os.Args) > 1 {
-		return os.Args[1]
-	}
-	return ""
 }

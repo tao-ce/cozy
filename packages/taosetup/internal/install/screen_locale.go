@@ -1,29 +1,17 @@
-package internal
+package install
 
 import (
-	_ "embed"
-	"encoding/json"
 	"maps"
 	"slices"
 	"strings"
 
 	"charm.land/huh/v2"
-	"github.com/tao-ce/cozy/root/usr/libexec/tao-ce/cozy/appliance-setup/internal/i18n"
+	"github.com/tao-ce/cozy/taosetup/internal"
+	"github.com/tao-ce/cozy/taosetup/internal/i18n"
 )
 
-//go:embed tzdata.json
-var tzdata []byte
-var timezoneOptions = make(map[string][]string)
-
-func init() {
-	err := json.Unmarshal(tzdata, &timezoneOptions)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func (m *Model) LocaleScreen() *Screen {
-	timezoneRegions := slices.Collect(maps.Keys(timezoneOptions))
+	timezoneRegions := slices.Collect(maps.Keys(internal.GetTimezoneOptions()))
 	timezoneRegionsOptions := make([]huh.Option[string], len(timezoneRegions))
 	for i, region := range timezoneRegions {
 		timezoneRegionsOptions[i] = huh.NewOption(region, region)
@@ -55,7 +43,7 @@ func (m *Model) LocaleScreen() *Screen {
 				Inline(true).
 				OptionsFunc(func() []huh.Option[string] {
 					options := []huh.Option[string]{}
-					for _, city := range timezoneOptions[m.Setup.LocaleSetup.TimezoneRegion] {
+					for _, city := range internal.GetTimezoneOptions()[m.Setup.LocaleSetup.TimezoneRegion] {
 						options = append(options, huh.NewOption(strings.ReplaceAll(city, "_", " "), city))
 					}
 					return options

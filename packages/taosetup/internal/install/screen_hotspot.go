@@ -1,4 +1,4 @@
-package internal
+package install
 
 import "charm.land/huh/v2"
 

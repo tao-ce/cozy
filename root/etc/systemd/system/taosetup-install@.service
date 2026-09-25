@@ -20,14 +20,14 @@ Type=oneshot
 
 Environment=TTY=%i
 Environment=COZY_CONFIG_PATH=/etc/tao-ce/cozy/appliance.json
-Environment=COZY_LOG_PATH=/var/log/tao-ce/cozy/appliance-setup@%i.log
+Environment=COZY_LOG_PATH=/var/log/tao-ce/cozy/taosetup-install@%i.log
 Environment=TAO_CE_CONFIG_PATH=/etc/tao-ce/config/tao.yaml
 
 User=root
 SendSIGHUP=yes
 IgnoreSIGPIPE=no
 ExecStart=-/usr/libexec/tao-ce/cozy/kms-wrapper.sh \
-    /usr/libexec/tao-ce/cozy/appliance-setup $COZY_CONFIG_PATH
+    /usr/libexec/tao-ce/cozy/taosetup install -config-path $COZY_CONFIG_PATH
 ExecStartPost=-/usr/libexec/tao-ce/cozy/appliance-apply.sh
 
 TTYPath=/dev/%i

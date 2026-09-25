@@ -1,4 +1,4 @@
-package internal
+package install
 
 import (
 	tea "charm.land/bubbletea/v2"

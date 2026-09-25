@@ -6,13 +6,13 @@ import (
 )
 
 //go:embed *.json
-var i8nFiles embed.FS
+var i18nFiles embed.FS
 var i18nFilesMap = make(map[string]I18n)
 
 var defaultLangCode = "en_US.UTF-8"
 
 func init() {
-	files, err := i8nFiles.ReadDir(".")
+	files, err := i18nFiles.ReadDir(".")
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +20,7 @@ func init() {
 		if file.IsDir() {
 			continue
 		}
-		data, err := i8nFiles.ReadFile(file.Name())
+		data, err := i18nFiles.ReadFile(file.Name())
 		if err != nil {
 			panic(err)
 		}

@@ -8,13 +8,13 @@ ARG OS_VARIANT="TAO Community Edition - Cozy"
 ARG OS_VARIANT_ID="com.taotesting.cozy"
 
 
-FROM golang:1-alpine AS appliance-setup-builder
+FROM golang:1-alpine AS taosetup-builder
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
 WORKDIR /app
-COPY ./packages/appliance-setup/ .
-RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -o appliance-setup main.go
+COPY ./packages/taosetup/ .
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -o taosetup main.go
 
 FROM ${FEDORA_FLAVOR}:${FEDORA_VERSION} AS appliance
 
@@ -32,10 +32,13 @@ ARG COCKPIT_TAO_CE_VERSION='0.0.0'
 
 LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
 
-RUN dnf -y swap fedora-release generic-release --allowerasing \
-    && dnf -y remove kdeconnectd  kde-connect \
-    && echo 'VARIANT="${OS_VARIANT}"' >>/usr/lib/os-release \
-    && echo 'VARIANT_ID="${OS_VARIANT_ID}"' >>/usr/lib/os-release
+RUN \
+    --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
+    --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \
+    dnf -y swap fedora-release generic-release --allowerasing \
+        && dnf -y remove kdeconnectd  kde-connect \
+        && echo 'VARIANT="${OS_VARIANT}"' >>/usr/lib/os-release \
+        && echo 'VARIANT_ID="${OS_VARIANT_ID}"' >>/usr/lib/os-release
 
 COPY ./config/images.common.lst /run/context/images.common.lst
 COPY ./config/images.${MEDIUM}.lst /run/context/images.${MEDIUM}.lst
@@ -69,9 +72,9 @@ RUN mkdir -p /usr/share/cockpit/tao-ce/ \
         --strip-components=2 \
         cockpit-tao-ce/dist
 
-COPY --from=appliance-setup-builder \
-    /app/appliance-setup \
-    /usr/libexec/tao-ce/cozy/appliance-setup
+COPY --from=taosetup-builder \
+    /app/taosetup \
+    /usr/libexec/tao-ce/cozy/taosetup
 
 RUN \
     mkdir -p /etc/tao-ce/cozy \
@@ -81,6 +84,7 @@ RUN \
     && systemctl disable getty@tty1.service \
     && systemctl enable \
         sshd.service \
-        appliance-setup@tty4.service \
+        taosetup-install@tty4.service \
+        taosetup-dashboard@tty4.service \
         kmscon.service \
     && dnf clean all

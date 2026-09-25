@@ -1,6 +1,6 @@
 [Unit]
 Description=Pubsub emulator for TAO Community
-After=appliance-setup.service
+After=taosetup-install.service
 After=network-online.target
 
 [Container]

@@ -255,6 +255,9 @@ function(args={})
                     [ "RTC", {localOrUTC: "UTC", }, ],
                     [ "Clipboard", {mode: "Bidirectional", }, ],
                     [ "DragAndDrop", {mode: "Bidirectional", }, ],
+                    [ 'SharedFolders',
+                        [ 'SharedFolder', {name: 'tao-ce-exchange', hostPath: "./tao-ce", writable: "true", autoMount: "true", autoMountPoint: "/mnt/tao-ce"}, ],
+                    ],
                     [ //StorageControllers
                         'StorageControllers',
                         [
