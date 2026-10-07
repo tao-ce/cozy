@@ -11,15 +11,34 @@ import (
 	"github.com/tao-ce/cozy/root/usr/libexec/tao-ce/cozy/appliance-setup/internal/i18n"
 )
 
+type timezoneCountry struct {
+	Name string `json:"name"`
+	Code string `json:"code"`
+}
+
+type timezoneCity struct {
+	Name    string          `json:"name"`
+	Country timezoneCountry `json:"country"`
+}
+
 //go:embed tzdata.json
 var tzdata []byte
-var timezoneOptions = make(map[string][]string)
+var timezoneOptions = make(map[string][]timezoneCity)
 
 func init() {
 	err := json.Unmarshal(tzdata, &timezoneOptions)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func timezoneCountryCode(region, city string) string {
+	for _, entry := range timezoneOptions[region] {
+		if entry.Name == city {
+			return entry.Country.Code
+		}
+	}
+	return ""
 }
 
 func (m *Model) LocaleScreen() *Screen {
@@ -56,7 +75,11 @@ func (m *Model) LocaleScreen() *Screen {
 				OptionsFunc(func() []huh.Option[string] {
 					options := []huh.Option[string]{}
 					for _, city := range timezoneOptions[m.Setup.LocaleSetup.TimezoneRegion] {
-						options = append(options, huh.NewOption(strings.ReplaceAll(city, "_", " "), city))
+						label := strings.ReplaceAll(city.Name, "_", " ")
+						if city.Country.Code != "" {
+							label = strings.Join([]string{label, city.Country.Code}, " · ")
+						}
+						options = append(options, huh.NewOption(label, city.Name))
 					}
 					return options
 				}, &m.Setup.LocaleSetup.TimezoneRegion).
