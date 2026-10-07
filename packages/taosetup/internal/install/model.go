@@ -17,6 +17,41 @@ import (
 type SetupStep int
 type ModelPredicate int
 
+<<<<<<< HEAD:packages/taosetup/internal/install/model.go
+=======
+type TAOCEConfig struct {
+	FQDN   string `json:"fqdn,omitempty"`
+	Flavor string `json:"flavor,omitempty"`
+	Image  string `json:"image,omitempty"`
+}
+
+type ApplianceFeatures struct {
+	StartMulticastDNS bool `json:"mdns"`
+	StartWiFiHotspot  bool `json:"hotspot"`
+}
+
+type WiFiHotspotSetup struct {
+	SSID     string `json:"ssid,omitempty"`
+	Security string `json:"security,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+
+type LocaleSetup struct {
+	Language            string `json:"language,omitempty"`
+	TimezoneRegion      string `json:"timezoneRegion,omitempty"`
+	TimezoneCity        string `json:"timezoneCity,omitempty"`
+	TimezoneCountryCode string `json:"timezoneCountryCode,omitempty"`
+}
+
+type ApplianceSetup struct {
+	ApplianceFeatures ApplianceFeatures `json:"features,omitempty"`
+	LocaleSetup       LocaleSetup       `json:"locale,omitempty"`
+	TAOCEConfig       TAOCEConfig       `json:"taoCe,omitempty"`
+	WifiHotspotSetup  WiFiHotspotSetup  `json:"hotspot,omitempty"`
+	Metadata          map[string]string `json:"metadata"`
+	Medium            string            `json:"medium,omitempty"`
+}
+>>>>>>> 5da927a (fix: enforce country code for wifi):packages/appliance-setup/internal/model.go
 type Model struct {
 	Setup              *internal.ApplianceSetup
 	SetupStep          SetupStep

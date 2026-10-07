@@ -1,8 +1,8 @@
 {
     "locale": {
         "language": "en_US.UTF-8",
-        "timezoneRegion": "Etc",
-        "timezoneCity": "UTC"
+        "timezoneRegion": "Europe",
+        "timezoneCity": "Luxembourg"
     },
     "features": {
         "mdns": true,

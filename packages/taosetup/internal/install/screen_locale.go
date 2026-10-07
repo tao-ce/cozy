@@ -44,7 +44,11 @@ func (m *Model) LocaleScreen() *Screen {
 				OptionsFunc(func() []huh.Option[string] {
 					options := []huh.Option[string]{}
 					for _, city := range internal.GetTimezoneOptions()[m.Setup.LocaleSetup.TimezoneRegion] {
-						options = append(options, huh.NewOption(strings.ReplaceAll(city, "_", " "), city))
+						label := strings.ReplaceAll(city.Name, "_", " ")
+						if city.Country.Code != "" {
+							label = strings.Join([]string{label, city.Country.Code}, " · ")
+						}
+						options = append(options, huh.NewOption(label, city.Name))
 					}
 					return options
 				}, &m.Setup.LocaleSetup.TimezoneRegion).
