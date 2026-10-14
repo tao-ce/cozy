@@ -5,7 +5,7 @@ on:
     tags:
       - '**'
     branches:
-      - build/**
+      - 'build/**'
     paths:
       - packages/**
       - config/bootc.rpi*.toml
