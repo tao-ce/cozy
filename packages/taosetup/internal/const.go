@@ -3,7 +3,7 @@ package internal
 import "time"
 
 const (
-	ApplianceConfigVersion = "1.2.0"
+	ApplianceConfigVersion = "1.2.2"
 	ApplianceConfigSource  = "taosetup"
 	DefaultWelcomeTimeout  = 30 * time.Second
 	DefaultConfigPath      = "/etc/tao-ce/cozy/taosetup.json"

@@ -28,6 +28,7 @@ type LocaleSetup struct {
 	Language       string `json:"language,omitempty"`
 	TimezoneRegion string `json:"timezoneRegion,omitempty"`
 	TimezoneCity   string `json:"timezoneCity,omitempty"`
+	TimezoneCountryCode string `json:"timezoneCountryCode,omitempty"`
 }
 
 type ApplianceSetup struct {
@@ -52,6 +53,11 @@ func (c *ApplianceSetup) Export(configPath string) {
 	if c.WifiHotspotSetup.Security == "open" {
 		c.WifiHotspotSetup.Password = ""
 	}
+
+	c.LocaleSetup.TimezoneCountryCode = GetCountryCode(
+		c.LocaleSetup.TimezoneRegion,
+		c.LocaleSetup.TimezoneCity,
+	)
 
 	jsonData, err := json.Marshal(&c)
 	if err != nil {
