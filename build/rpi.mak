@@ -19,8 +19,8 @@ build-rpi4: IMAGE_MEDIUM = rpi4
 build-rpi4: $(OUTPUT_DIR)/$(IMAGE_FULL_NAME).raw.xz
 
 $(OUTPUT_DIR)/$(IMAGE_FULL_NAME).raw.xz: $(OUTPUT_DIR)/$(IMAGE_FULL_NAME).raw
-	guestfish \
-		-m /dev/sda3:${ROOT_MOUNT_POINT} \
+	sudo guestfish \
+		-m /dev/sda3:$(ROOT_MOUNT_POINT) \
 		-m /dev/sda2:/boot \
 		-m /dev/sda1:/boot/efi \
 		-a $(OUTPUT_DIR)/$(IMAGE_FULL_NAME).$(IMAGE_FORMAT) \
