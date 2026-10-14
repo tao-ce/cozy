@@ -19,7 +19,7 @@ on:
 env:
   REGISTRY: ghcr.io/tao-ce/cozy
   FS_TYPE: btrfs
-  FEDORA_VERSION: "44"
+  FEDORA_VERSION: "45"
   IMAGE_PFX: tao-ce-cozy-vm-
 
 jobs:
@@ -29,8 +29,6 @@ jobs:
         include:
         - fedora_flavor: quay.io/fedora/fedora-bootc
           name: server
-        # - fedora_flavor: quay.io/fedora-ostree-desktops/kinoite
-          # name: desktop
     permissions:
       contents: read
       packages: write
@@ -53,64 +51,10 @@ jobs:
       with:
         path: /var/lib/containers/storage
         key: ${{ runner.os }}-${{ runner.arch }}-containers-storage
-
-    - name: Build Image
-      run: |
-        sudo buildah build \
-          -t ${{ env.REGISTRY }}/vm/${{ matrix.name }}:latest \
-          --build-arg FEDORA_FLAVOR=${{ matrix.fedora_flavor }} \
-          --build-arg FEDORA_VERSION=${{ env.FEDORA_VERSION }} \
-          --build-arg MEDIUM=vm \
-          --target appliance \
-          --network=host \
-          .
-
+ 
     - name: Build VM Image
       run: |
-        mkdir -p output/${{ matrix.name }}
-        sudo podman run \
-          --rm \
-          -it \
-          --privileged \
-          --security-opt label=type:unconfined_t \
-          -v ./config/bootc.vm.toml:/config.toml:ro \
-          -v ./output/${{ matrix.name }}:/output \
-          -v  /var/lib/containers/storage:/var/lib/containers/storage \
-          quay.io/centos-bootc/bootc-image-builder:latest \
-            --type vmdk \
-            --rootfs ${{ env.FS_TYPE }} \
-            --chown $(id -u):$(id -g) \
-            --log-level debug \
-            -vv \
-            --use-librepo \
-            ${{ env.REGISTRY }}/vm/${{ matrix.name }}:latest
-        sudo mv ./output/${{ matrix.name }}/vmdk/disk.vmdk ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk
-
-    - name: Generate OVF
-      run: |
-        sudo apt update && sudo apt install -y jsonnet qemu-utils
-        VM_MANIFEST=$(jq -nc  \
-          --arg disk_file "${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk" \
-          --arg disk_capacity "$(qemu-img info --output json ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk | jq -r '.["virtual-size"]')" \
-          --arg disk_uuid "$(uuidgen)" \
-          --arg machine_uuid "$(uuidgen)" \
-            '{disk: {file: $disk_file, capacity: $disk_capacity, uuid: $disk_uuid }, machine: { uuid: $machine_uuid } }')
-        jsonnet -S \
-          --tla-code args="$VM_MANIFEST" \
-          config/vm.ovf.jsonnet > ./output/${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf
-
-    - name: Pack OVA
-      working-directory: ./output
-      run: |
-        sha256sum --tag \
-          ./${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf \
-          ./${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk \
-          > ./${{ env.IMAGE_PFX }}${{ matrix.name }}.mf
-
-        tar -cvf ${{ env.IMAGE_PFX }}${{ matrix.name }}.ova \
-          ${{ env.IMAGE_PFX }}${{ matrix.name }}.ovf \
-          ${{ env.IMAGE_PFX }}${{ matrix.name }}.vmdk \
-          ${{ env.IMAGE_PFX }}${{ matrix.name }}.mf
+        make requirements build-image build-ova
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v7

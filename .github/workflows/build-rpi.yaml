@@ -1,0 +1,68 @@
+name: Build Raspberry Pi Images
+
+on:
+  push:
+    tags:
+      - '**'
+    branches:
+      - build/**
+    paths:
+      - packages/**
+      - config/bootc.rpi*.toml
+      - config/images.common.lst
+      - config/images.rpi*.lst
+      - config/packages.common.lst
+      - config/packages.rpi*.lst
+      - root/**
+      - Containerfile
+      - .github/workflows/build-rpi.yaml
+
+env:
+  REGISTRY: ghcr.io/tao-ce/cozy
+  FS_TYPE: btrfs
+  FEDORA_VERSION: "45"
+  IMAGE_NAME_PREFIX: tao-ce-cozy
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        medium: [rpi4, rpi5]
+        include:
+        - fedora_flavor: quay.io/fedora/fedora-bootc
+          name: server
+      
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: Tar as root (setuid bit)
+      run: |
+        sudo chmod u+s /usr/bin/tar
+
+    - name: Checkout code
+      uses: actions/checkout@v6
+      with:
+        submodules: recursive
+
+    - name: Setup cache
+      uses: actions/cache@v5
+      with:
+        path: /var/lib/containers/storage
+        key: ${{ runner.os }}-${{ runner.arch }}-containers-storage
+
+    - name: Build ${{ matrix.medium }} Image
+      run: |
+        make requirements build-${{ matrix.medium }}-image build-${{ matrix.medium }}
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ env.IMAGE_NAME_PREFIX }}-${{ matrix.medium }}-${{ matrix.name }}
+        path: ./output/${{ env.IMAGE_NAME_PREFIX }}-${{ matrix.medium }}-${{ matrix.name }}.raw.xz
+        archive: false
+        if-no-files-found: error

@@ -13,6 +13,7 @@ cockpit-ostree
 cockpit-podman
 cockpit-networkmanager
 cockpit-files
+cockpit-storaged
 pcp
 kmscon
 kmscon-freetype

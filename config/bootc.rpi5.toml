@@ -1,0 +1,5 @@
+[[customizations.user]]
+name = "tao"
+password = "tao"
+description = "TAO Community Edition"
+groups = ["wheel" ]
