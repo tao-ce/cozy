@@ -36,9 +36,10 @@ type WiFiHotspotSetup struct {
 }
 
 type LocaleSetup struct {
-	Language       string `json:"language,omitempty"`
-	TimezoneRegion string `json:"timezoneRegion,omitempty"`
-	TimezoneCity   string `json:"timezoneCity,omitempty"`
+	Language            string `json:"language,omitempty"`
+	TimezoneRegion      string `json:"timezoneRegion,omitempty"`
+	TimezoneCity        string `json:"timezoneCity,omitempty"`
+	TimezoneCountryCode string `json:"timezoneCountryCode,omitempty"`
 }
 
 type ApplianceSetup struct {
@@ -131,6 +132,10 @@ func (m *Model) Export() {
 		m.Setup.WifiHotspotSetup.Password = ""
 	}
 
+	m.Setup.LocaleSetup.TimezoneCountryCode = timezoneCountryCode(
+		m.Setup.LocaleSetup.TimezoneRegion,
+		m.Setup.LocaleSetup.TimezoneCity,
+	)
 	jsonData, err := json.Marshal(&m.Setup)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error marshalling setup:", err)

@@ -47,6 +47,7 @@ method=shared
 method=ignore
 EOF
     chmod 600 $HOTSPOT_NMCONNECTION_PATH
+    iw reg set $(jq -r '.locale.timezoneCountryCode' $COZY_CONFIG_PATH)
 }
 
 echo "Setting FQDN"
