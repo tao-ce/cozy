@@ -76,7 +76,7 @@ jobs:
           -v ./config/bootc.vm.toml:/config.toml:ro \
           -v ./output/${{ matrix.name }}:/output \
           -v  /var/lib/containers/storage:/var/lib/containers/storage \
-          quay.io/centos-bootc/bootc-image-builder:latest \
+          quay.io/centos-bootc/bootc-image-builder:sha256-2b52843ea2bfda73b0a08d97e76b734393b1d3a804681b9fabb26723bd3a2f0b \
             --type vmdk \
             --rootfs ${{ env.FS_TYPE }} \
             --chown $(id -u):$(id -g) \
