@@ -12,6 +12,9 @@ on:
       - config/images.vm.lst
       - config/packages.common.lst
       - config/packages.vm.lst
+      - build/bootc.mak
+      - build/vm.mak
+      - Makefile
       - root/**
       - Containerfile
       - .github/workflows/build-vm.yaml

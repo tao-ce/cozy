@@ -13,6 +13,9 @@ on:
       - config/images.rpi*.lst
       - config/packages.common.lst
       - config/packages.rpi*.lst
+      - build/bootc.mak
+      - build/rpi.mak
+      - Makefile
       - root/**
       - Containerfile
       - .github/workflows/build-rpi.yaml
