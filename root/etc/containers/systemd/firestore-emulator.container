@@ -5,6 +5,7 @@ After=network-online.target
 
 [Container]
 Image=quay.io/tao-ce/services/firestore-emulator:latest
+Pull=Never
 IP=10.247.40.9
 Network=deps.network
 NetworkAlias=firestore
@@ -14,6 +15,7 @@ Volume=/var/lib/tao-ce/dependencies/firestore:/data:z,U
 [Service]
 Restart=always
 ExecStartPre=mkdir -p /var/lib/tao-ce/dependencies/firestore
+ExecStartPre=/usr/libexec/tao-ce/cozy/pull_image.sh -m remote -n quay.io/tao-ce/services/firestore-emulator:latest -p quay.io/tao-ce/services/firestore-emulator:latest
 RestartSec=5s
 TimeoutStartSec=600s
 

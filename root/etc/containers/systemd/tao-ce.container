@@ -10,6 +10,7 @@ After=taosetup-install.service
 After=network-online.target
 
 [Container]
+Pull=Never
 PublishPort=443:443
 IP=10.247.40.73
 Network=deps.network

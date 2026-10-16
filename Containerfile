@@ -13,6 +13,12 @@ WORKDIR /app
 COPY ./packages/taosetup/ .
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -ldflags "-s -w" -o taosetup main.go
 
+FROM golang:1-alpine AS crane-builder
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go install github.com/google/go-containerregistry/cmd/crane@v0
+
 FROM ${FEDORA_FLAVOR}:${FEDORA_VERSION} AS base
 
 ARG TARGETPLATFORM
@@ -28,6 +34,7 @@ ARG COCKPIT_TAO_CE_VERSION='0.0.0'
 
 LABEL org.opencontainers.image.authors="opensource-support@taotesting.com"
 
+COPY --from=crane-builder /go/bin/crane /usr/local/bin/crane
 RUN \
     --mount=type=cache,id=dnf-cache,target=/var/cache/dnf \
     --mount=type=cache,id=libdnf-cache,target=/var/cache/libdnf5 \

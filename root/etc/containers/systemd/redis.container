@@ -5,6 +5,7 @@ After=network-online.target
 
 [Container]
 Image=docker.io/valkey/valkey:8-alpine
+Pull=Never
 IP=10.247.40.4
 NetworkAlias=redis
 Network=deps.network
@@ -14,6 +15,7 @@ Volume=/var/lib/tao-ce/dependencies/redis:/data:z,U
 Restart=always
 RestartSec=5s
 ExecStartPre=mkdir -p /var/lib/tao-ce/dependencies/redis
+ExecStartPre=/usr/libexec/tao-ce/cozy/pull_image.sh -m remote -n docker.io/valkey/valkey:8-alpine -p docker.io/valkey/valkey:9-alpine
 
 [Install]
 WantedBy=multi-user.target

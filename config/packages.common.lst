@@ -15,6 +15,7 @@ cockpit-networkmanager
 cockpit-files
 cockpit-storaged
 pcp
+pv
 kmscon
 kmscon-freetype
 google-noto-emoji-fonts

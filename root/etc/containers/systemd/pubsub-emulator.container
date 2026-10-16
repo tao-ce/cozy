@@ -5,6 +5,7 @@ After=network-online.target
 
 [Container]
 Image=quay.io/tao-ce/services/pubsub-emulator:latest
+Pull=Never
 NetworkAlias=pubsub
 IP=10.247.40.8
 Network=deps.network
@@ -13,6 +14,7 @@ Network=deps.network
 Restart=always
 RestartSec=5s
 TimeoutStartSec=600s
+ExecStartPre=/usr/libexec/tao-ce/cozy/pull_image.sh -m remote -n quay.io/tao-ce/services/pubsub-emulator:latest -p quay.io/tao-ce/services/pubsub-emulator:latest
 
 [Install]
 WantedBy=multi-user.target

@@ -5,6 +5,7 @@ After=network-online.target
 
 [Container]
 Image=docker.elastic.co/elasticsearch/elasticsearch:8.17.4
+Pull=Never
 IP=10.247.40.7
 Network=deps.network
 NetworkAlias=es
@@ -28,8 +29,10 @@ Volume=/var/lib/tao-ce/dependencies/es:/usr/share/elasticsearch/data:z,U
 [Service]
 Restart=always
 ExecStartPre=mkdir -p /var/lib/tao-ce/dependencies/es
+ExecStartPre=/usr/libexec/tao-ce/cozy/pull_image.sh -m remote -n docker.elastic.co/elasticsearch/elasticsearch:8.17.4 -p docker.elastic.co/elasticsearch/elasticsearch:8.17.4
 RestartSec=5s
 TimeoutStartSec=600s
+
 
 [Install]
 WantedBy=multi-user.target
